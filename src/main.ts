@@ -1,7 +1,6 @@
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastifyHelmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
-import { VersioningType } from '@nestjs/common';
 import fastifyCsrf from '@fastify/csrf-protection';
 
 import { AppModule } from './app.module';
@@ -12,9 +11,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
 
   app.enableCors();
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
 
   await app.register(fastifyHelmet, {
     contentSecurityPolicy: {
