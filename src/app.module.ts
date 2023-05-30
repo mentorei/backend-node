@@ -6,6 +6,7 @@ import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/ap
 import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
 import { UserService } from './services/user/user.service';
 import { UserResolver } from './resolvers/user/user.resolver';
+import { AuthService } from './services/auth/auth.service';
 
 @Module({
   imports: [
@@ -15,13 +16,14 @@ import { UserResolver } from './resolvers/user/user.resolver';
         federation: 2,
       },
     }),
+
     ConfigModule.forRoot({
       /* envFilePath: ['.env.development.local', '.env.development'], */
       isGlobal: true,
       cache: true,
     }),
   ],
-  providers: [UserService, PrismaClient, UserResolver],
+  providers: [UserService, PrismaClient, UserResolver, AuthService],
 })
 export class AppModule {
   constructor() {

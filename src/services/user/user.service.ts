@@ -7,7 +7,7 @@ import { CreateUserInput } from '../../dto/user/create-user.input';
 export class UserService {
   constructor(private readonly $prisma: PrismaClient) {}
 
-  public async createUser(user: CreateUserInput): Promise<void | User> {
+  public async createUser(user: CreateUserInput): Promise<User> {
     return this.$prisma.user.create({
       data: {
         email: user.email,

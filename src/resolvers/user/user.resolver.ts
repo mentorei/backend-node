@@ -1,13 +1,38 @@
 import { GenderType, MaritalType, User } from '@prisma/client';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-
 import { UserEntity } from 'src/entities/user/user.entity';
 import { UserService } from 'src/services/user/user.service';
 import { CreateUserInput } from 'src/dto/user/create-user.input';
+import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
+import { AuthService } from 'src/services/auth/auth.service';
 
 @Resolver()
 export class UserResolver {
-  constructor(private readonly $user: UserService) {}
+  constructor(private readonly $user: UserService, private readonly $jwt: AuthService) {}
+
+  @Mutation(() => UserAuthEntity, { name: 'createUserAuth' })
+  public async createUserAuth(
+    @Args('email', { type: () => String }) email: string,
+    @Args('name', { type: () => String }) name: string,
+    @Args('cpf', { type: () => String }) cpf: string,
+    @Args('password', { type: () => String }) password: string
+  ): Promise<UserAuthEntity> {
+    const user = new CreateUserInput();
+    user.email = email;
+    user.cpf = cpf;
+    user.name = name;
+    user.password = password;
+
+    const userCreated = await this.$user.createUser(user);
+
+    const userAuth = new UserAuthEntity();
+    userAuth.email = userCreated.email;
+    userAuth.name = userCreated.name;
+    userAuth.id = userCreated.id;
+    userAuth.token = 'asd';
+
+    return userAuth;
+  }
 
   @Mutation(() => UserEntity, { name: 'createUser' })
   public createUser(
