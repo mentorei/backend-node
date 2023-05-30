@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
-
 import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
+
 import { UserService } from './services/user/user.service';
-import { UserResolver } from './resolvers/user/user.resolver';
 import { AuthService } from './services/auth/auth.service';
+import { UserResolver } from './resolvers/user/user.resolver';
+import { JwtStrategy } from './auth/auth.strategy';
 
 @Module({
   imports: [
@@ -16,14 +18,16 @@ import { AuthService } from './services/auth/auth.service';
         federation: 2,
       },
     }),
-
     ConfigModule.forRoot({
-      /* envFilePath: ['.env.development.local', '.env.development'], */
       isGlobal: true,
       cache: true,
     }),
+    JwtModule.register({
+      secret: process.env.SECRET_JWT,
+      signOptions: { expiresIn: '7 days' },
+    }),
   ],
-  providers: [UserService, PrismaClient, UserResolver, AuthService],
+  providers: [UserService, PrismaClient, UserResolver, AuthService, JwtStrategy],
 })
 export class AppModule {
   constructor() {

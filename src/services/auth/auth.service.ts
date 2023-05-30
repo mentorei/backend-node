@@ -1,13 +1,12 @@
-import { JWT } from '@fastify/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from 'src/dto/user/create-user.input';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly $jwt: JWT) {}
+  constructor(private readonly $jwt: JwtService) {}
 
-  public generateAccess(user: CreateUserInput): any {
-    const token = this.$jwt.sign({ name: user.name }, { sub: user.id, expiresIn: '7 days' });
-    return { token };
+  public generateAccess(user: CreateUserInput): string {
+    return this.$jwt.sign({ userId: user.id, name: user.name });
   }
 }
