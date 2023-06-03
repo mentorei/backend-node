@@ -5,23 +5,20 @@ import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class UserCompanyEntity {
-  @Field(() => ID, { nullable: true })
-  id?: string;
+  @Field(() => ID)
+  id: string;
 
   @Field(() => String)
   name: string;
 
-  @Field()
-  responsibility: string;
+  @Field(() => String, { nullable: true })
+  responsibility?: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
-
-  @Field()
-  deleted?: Date;
 
   @Field(() => [UserEntity], { nullable: true })
   User?: Prisma.UserUncheckedCreateNestedOneWithoutCompanyInput;

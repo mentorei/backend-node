@@ -14,20 +14,14 @@ export class HardSkillEntity {
   @Field(() => LevelType)
   level: LevelType;
 
-  @Field(() => String)
-  description: string;
+  @Field(() => String, { nullable: true })
+  description?: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
-
-  @Field()
-  deleted?: Date;
-
-  @Field(() => String)
-  userId: string;
 
   @Field(() => UserEntity, { nullable: true })
   user?: UserEntity;

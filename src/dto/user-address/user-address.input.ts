@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { InputType, Field, ID, Int } from '@nestjs/graphql';
-import { CreateUserInput } from '../user/create-user.input';
+import { UserInput } from '../user/user.input';
 
 @InputType()
-export class CreateUserAddressInput implements Prisma.UserAddressUncheckedCreateInput {
-  @Field(() => ID, { nullable: true })
-  id?: string;
+export class UserAddressInput implements Prisma.UserAddressUncheckedCreateInput {
+  @Field(() => ID)
+  id: string;
 
   @Field(() => String)
   postalCode: string;
@@ -31,15 +31,15 @@ export class CreateUserAddressInput implements Prisma.UserAddressUncheckedCreate
   @Field(() => String)
   country: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   deleted?: Date;
 
-  @Field(() => CreateUserInput)
+  @Field(() => UserInput)
   User: Prisma.UserUncheckedCreateNestedOneWithoutAddressInput;
 }

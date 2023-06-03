@@ -5,10 +5,14 @@ import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
 
+import { JwtStrategy } from './auth/auth.strategy';
 import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
 import { UserResolver } from './resolvers/user/user.resolver';
-import { JwtStrategy } from './auth/auth.strategy';
+import { MentorService } from './services/mentor/mentor.service';
+import { MenteeService } from './services/mentee/mentee.service';
+import { MentorResolver } from './resolvers/mentor/mentor.resolver';
+import { MenteeResolver } from './resolvers/mentee/mentee.resolver';
 
 @Module({
   imports: [
@@ -27,7 +31,17 @@ import { JwtStrategy } from './auth/auth.strategy';
       signOptions: { expiresIn: '7 days' },
     }),
   ],
-  providers: [UserService, PrismaClient, UserResolver, AuthService, JwtStrategy],
+  providers: [
+    UserResolver,
+    MentorResolver,
+    MenteeResolver,
+    UserService,
+    AuthService,
+    MentorService,
+    MenteeService,
+    JwtStrategy,
+    PrismaClient,
+  ],
 })
 export class AppModule {
   constructor() {
