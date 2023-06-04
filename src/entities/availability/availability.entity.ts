@@ -1,10 +1,10 @@
-import { Prisma, WeekdayType } from '@prisma/client';
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { WeekdayType } from '@prisma/client';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 
-@InputType()
-export class AvailabilityInput implements Prisma.AvailabilityUncheckedCreateInput {
+@ObjectType()
+export class AvailabilityEntity {
   @Field(() => ID)
   id: string;
 

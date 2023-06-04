@@ -1,18 +1,15 @@
-import { Prisma } from '@prisma/client';
-import { InputType, Field, ID, Int } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
+import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
 
-@InputType()
-export class EvaluationInput implements Prisma.EvaluationUncheckedCreateInput {
+@ObjectType()
+export class ConnectionEntity {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Int)
-  rating: number;
-
   @Field(() => String, { nullable: true })
-  description?: string;
+  meetUrl: string;
 
   @Field(() => Date)
   createdAt: Date;
@@ -20,12 +17,15 @@ export class EvaluationInput implements Prisma.EvaluationUncheckedCreateInput {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Date, { nullable: true })
-  deleted?: Date;
-
   @Field(() => String)
   mentorId: string;
 
   @Field(() => MentorEntity, { nullable: true })
   mentor?: MentorEntity;
+
+  @Field(() => String)
+  menteeId: string;
+
+  @Field(() => MenteeEntity, { nullable: true })
+  mentee?: MenteeEntity;
 }

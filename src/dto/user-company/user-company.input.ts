@@ -5,8 +5,8 @@ import { UserInput } from '../user/user.input';
 
 @InputType()
 export class UserCompanyInput implements Prisma.UserCompanyUncheckedCreateInput {
-  @Field(() => ID)
-  id: string;
+  @Field(() => ID, { nullable: true })
+  id?: string;
 
   @Field(() => String)
   name: string;
@@ -14,8 +14,8 @@ export class UserCompanyInput implements Prisma.UserCompanyUncheckedCreateInput 
   @Field(() => String, { nullable: true })
   responsibility?: string;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;

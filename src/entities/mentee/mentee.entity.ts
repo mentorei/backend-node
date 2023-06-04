@@ -26,12 +26,6 @@ export class MenteeEntity {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Date, { nullable: true })
-  deleted?: Date;
-
   @Field(() => UserEntity, { nullable: true })
   User?: UserEntity;
-
-  @Field(() => String)
-  userId: string;
 }

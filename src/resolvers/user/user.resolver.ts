@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { GenderType, MaritalType, User } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
@@ -9,10 +9,19 @@ import { UserEntity } from 'src/entities/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user/user.service';
 import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
+import { UserCompanyInput } from 'src/dto/user-company/user-company.input';
+import { UserAddressInput } from 'src/dto/user-address/user-address.input';
+import { UserAddressService } from 'src/services/user-address/user-address.service';
+import { UserCompanyService } from 'src/services/user-company/user-company.service';
 
 @Resolver()
 export class UserResolver {
-  constructor(private readonly $user: UserService, private readonly $auth: AuthService) {}
+  constructor(
+    private $user: UserService,
+    private $auth: AuthService,
+    private $userAddress: UserAddressService,
+    private $userCompany: UserCompanyService
+  ) {}
 
   @Mutation(() => UserAuthEntity, { name: 'createUser' })
   public async createUser(
@@ -56,6 +65,48 @@ export class UserResolver {
     userAuth.token = token;
 
     return userAuth;
+  }
+
+  @Mutation(() => UserEntity, { name: 'updateUser' })
+  public async updateUser(
+    @Args('id', { type: () => String }) id: string,
+    @Args('gender', { type: () => GenderType, nullable: true }) gender?: GenderType,
+    @Args('document', { type: () => String, nullable: true }) document?: string,
+    @Args('phoneNumber', { type: () => String, nullable: true }) phoneNumber?: string,
+    @Args('birthDate', { type: () => String, nullable: true }) birthDate?: string,
+    @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
+    @Args('address', { type: () => UserAddressInput, nullable: true }) address?: UserAddressInput,
+    @Args('company', { type: () => UserCompanyInput, nullable: true }) company?: UserCompanyInput
+  ): Promise<UserEntity> {
+    const userAddress = await this.$userAddress.upsertUserAddress(address);
+    const userCompany = await this.$userCompany.upsertUserCompany(company);
+
+    const userInput = new UserInput();
+    userInput.id = id;
+    userInput.gender = gender;
+    userInput.document = document;
+    userInput.phoneNumber = phoneNumber;
+    userInput.birthDate = birthDate;
+    userInput.maritalStatus = maritalStatus;
+    userInput.companyId = userCompany.id;
+    userInput.addressId = userAddress.id;
+
+    const updateUser = await this.$user.updateUser(userInput);
+
+    const respUser = new UserEntity();
+    respUser.id = updateUser.id;
+    respUser.email = updateUser.email;
+    respUser.name = updateUser.name;
+    respUser.cpf = updateUser.cpf;
+    respUser.gender = updateUser.gender;
+    respUser.document = updateUser.document;
+    respUser.phoneNumber = updateUser.phoneNumber;
+    respUser.birthDate = updateUser.birthDate;
+    respUser.maritalStatus = updateUser.maritalStatus;
+    respUser.address = userAddress;
+    respUser.company = userCompany;
+
+    return respUser;
   }
 
   @UseGuards(GqlAuthGuard)

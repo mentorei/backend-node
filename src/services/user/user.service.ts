@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 
-import { UserInput } from '../../dto/user/user.input';
 import { comparePassword } from 'src/utils/bcrypt';
+import { UserInput } from '../../dto/user/user.input';
 
 @Injectable()
 export class UserService {
@@ -29,17 +29,6 @@ export class UserService {
     }
 
     return dbUser;
-  }
-
-  public async getAllUsers(): Promise<User[]> {
-    return this.$prisma.user.findMany({
-      include: {
-        address: true,
-        company: true,
-        softSkill: true,
-        hardSkill: true,
-      },
-    });
   }
 
   public async getUserById(id: string): Promise<User> {
@@ -84,15 +73,13 @@ export class UserService {
     return this.$prisma.user.update({
       where: { id: user.id },
       data: {
-        email: user.email,
-        cpf: user.cpf,
-        name: user.name,
-        password: user.password,
         gender: user.gender,
         document: user.document,
         phoneNumber: user.phoneNumber,
         birthDate: user.birthDate,
         maritalStatus: user.maritalStatus,
+        companyId: user.companyId,
+        addressId: user.addressId,
       },
     });
   }

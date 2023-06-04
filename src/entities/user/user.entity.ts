@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { GenderType, MaritalType, Prisma } from '@prisma/client';
+import { GenderType, MaritalType } from '@prisma/client';
 
 import { MenteeEntity } from '../mentee/mentee.entity';
 import { MentorEntity } from '../mentor/mentor.entity';
@@ -50,10 +50,10 @@ export class UserEntity {
   address?: UserAddressEntity;
 
   @Field(() => [HardSkillEntity], { nullable: true })
-  hardSkill?: Prisma.HardSkillUncheckedCreateNestedManyWithoutUserInput;
+  hardSkill?: Array<HardSkillEntity>;
 
   @Field(() => [SoftSkillEntity], { nullable: true })
-  softSkill?: Prisma.SoftSkillUncheckedCreateNestedManyWithoutUserInput;
+  softSkill?: Array<SoftSkillEntity>;
 
   @Field(() => MenteeEntity, { nullable: true })
   Mentee?: MenteeEntity;

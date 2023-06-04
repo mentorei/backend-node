@@ -4,8 +4,8 @@ import { UserInput } from '../user/user.input';
 
 @InputType()
 export class UserAddressInput implements Prisma.UserAddressUncheckedCreateInput {
-  @Field(() => ID)
-  id: string;
+  @Field(() => ID, { nullable: true })
+  id?: string;
 
   @Field(() => String)
   postalCode: string;
@@ -31,8 +31,8 @@ export class UserAddressInput implements Prisma.UserAddressUncheckedCreateInput 
   @Field(() => String)
   country: string;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
@@ -40,6 +40,6 @@ export class UserAddressInput implements Prisma.UserAddressUncheckedCreateInput 
   @Field(() => Date, { nullable: true })
   deleted?: Date;
 
-  @Field(() => UserInput)
-  User: Prisma.UserUncheckedCreateNestedOneWithoutAddressInput;
+  @Field(() => UserInput, { nullable: true })
+  User?: Prisma.UserUncheckedCreateNestedOneWithoutAddressInput;
 }

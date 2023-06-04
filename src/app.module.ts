@@ -13,6 +13,8 @@ import { MentorService } from './services/mentor/mentor.service';
 import { MenteeService } from './services/mentee/mentee.service';
 import { MentorResolver } from './resolvers/mentor/mentor.resolver';
 import { MenteeResolver } from './resolvers/mentee/mentee.resolver';
+import { UserCompanyService } from './services/user-company/user-company.service';
+import { UserAddressService } from './services/user-address/user-address.service';
 
 @Module({
   imports: [
@@ -35,8 +37,10 @@ import { MenteeResolver } from './resolvers/mentee/mentee.resolver';
     UserResolver,
     MentorResolver,
     MenteeResolver,
-    UserService,
     AuthService,
+    UserService,
+    UserCompanyService,
+    UserAddressService,
     MentorService,
     MenteeService,
     JwtStrategy,

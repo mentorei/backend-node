@@ -1,7 +1,4 @@
-import { Prisma } from '@prisma/client';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-
-import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class UserAddressEntity {
@@ -37,7 +34,4 @@ export class UserAddressEntity {
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
-
-  @Field(() => UserEntity)
-  User: Prisma.UserUncheckedCreateNestedOneWithoutAddressInput;
 }
