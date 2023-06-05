@@ -1,12 +1,12 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
 import { Prisma, LevelType } from '@prisma/client';
 
-import { CreateUserInput } from '../user/create-user.input';
+import { UserInput } from '../user/user.input';
 
 @InputType()
-export class CreateHardSkillInput implements Prisma.HardSkillUncheckedCreateInput {
-  @Field(() => ID, { nullable: true })
-  id?: string;
+export class HardSkillInput implements Prisma.HardSkillUncheckedCreateInput {
+  @Field(() => ID)
+  id: string;
 
   @Field(() => String)
   name: string;
@@ -14,21 +14,21 @@ export class CreateHardSkillInput implements Prisma.HardSkillUncheckedCreateInpu
   @Field(() => LevelType)
   level: LevelType;
 
-  @Field(() => String)
-  description: string;
+  @Field(() => String, { nullable: true })
+  description?: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   deleted?: Date;
 
   @Field(() => String)
   userId: string;
 
-  @Field(() => CreateUserInput, { nullable: true })
-  user?: CreateUserInput;
+  @Field(() => UserInput, { nullable: true })
+  user?: UserInput;
 }

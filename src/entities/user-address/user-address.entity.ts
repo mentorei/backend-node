@@ -1,12 +1,9 @@
-import { Prisma } from '@prisma/client';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-
-import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class UserAddressEntity {
-  @Field(() => ID, { nullable: true })
-  id?: string;
+  @Field(() => ID)
+  id: string;
 
   @Field(() => String)
   postalCode: string;
@@ -32,15 +29,9 @@ export class UserAddressEntity {
   @Field(() => String)
   country: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
-
-  @Field()
-  deleted?: Date;
-
-  @Field(() => UserEntity)
-  User: Prisma.UserUncheckedCreateNestedOneWithoutAddressInput;
 }

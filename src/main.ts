@@ -1,7 +1,7 @@
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import fastifyHelmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
+import fastifyHelmet from '@fastify/helmet';
 import fastifyCsrf from '@fastify/csrf-protection';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
 import { AppModule } from './app.module';
 
