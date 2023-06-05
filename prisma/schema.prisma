@@ -138,6 +138,7 @@ model Mentee {
 
 model Connection {
   id        String    @id @default(uuid())
+  meetUrl   String?
   mentorId  String    @unique
   mentor    Mentor    @relation(fields: [mentorId], references: [id])
   menteeId  String    @unique
