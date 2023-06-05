@@ -13,8 +13,25 @@ import { MentorService } from './services/mentor/mentor.service';
 import { MenteeService } from './services/mentee/mentee.service';
 import { MentorResolver } from './resolvers/mentor/mentor.resolver';
 import { MenteeResolver } from './resolvers/mentee/mentee.resolver';
+import { HardSkillService } from './services/hard-skill/hard-skill.service';
+import { SoftSkillService } from './services/soft-skill/soft-skill.service';
+import { HardSkillResolver } from './resolvers/hard-skill/hard-skill.resolver';
+import { SoftSkillResolver } from './resolvers/soft-skill/soft-skill.resolver';
 import { UserCompanyService } from './services/user-company/user-company.service';
 import { UserAddressService } from './services/user-address/user-address.service';
+
+const RESOLVERS = [UserResolver, MentorResolver, MenteeResolver, HardSkillResolver, SoftSkillResolver];
+
+const SERVICES = [
+  AuthService,
+  UserService,
+  MentorService,
+  MenteeService,
+  SoftSkillService,
+  HardSkillService,
+  UserAddressService,
+  UserCompanyService,
+];
 
 @Module({
   imports: [
@@ -30,22 +47,10 @@ import { UserAddressService } from './services/user-address/user-address.service
     }),
     JwtModule.register({
       secret: process.env.SECRET_JWT,
-      signOptions: { expiresIn: '7 days' },
+      signOptions: { expiresIn: '3 days' },
     }),
   ],
-  providers: [
-    UserResolver,
-    MentorResolver,
-    MenteeResolver,
-    AuthService,
-    UserService,
-    UserCompanyService,
-    UserAddressService,
-    MentorService,
-    MenteeService,
-    JwtStrategy,
-    PrismaClient,
-  ],
+  providers: [...RESOLVERS, ...SERVICES, JwtStrategy, PrismaClient],
 })
 export class AppModule {
   constructor() {

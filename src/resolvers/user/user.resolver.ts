@@ -1,7 +1,8 @@
-import { GenderType, MaritalType, User } from '@prisma/client';
 import { UseGuards } from '@nestjs/common';
+import { GenderType, MaritalType, User } from '@prisma/client';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
+import { isNotEmpty } from 'src/utils/utils';
 import { encodePassword } from 'src/utils/bcrypt';
 import { UserInput } from 'src/dto/user/user.input';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -78,9 +79,6 @@ export class UserResolver {
     @Args('address', { type: () => UserAddressInput, nullable: true }) address?: UserAddressInput,
     @Args('company', { type: () => UserCompanyInput, nullable: true }) company?: UserCompanyInput
   ): Promise<UserEntity> {
-    const userAddress = await this.$userAddress.upsertUserAddress(address);
-    const userCompany = await this.$userCompany.upsertUserCompany(company);
-
     const userInput = new UserInput();
     userInput.id = id;
     userInput.gender = gender;
@@ -88,25 +86,20 @@ export class UserResolver {
     userInput.phoneNumber = phoneNumber;
     userInput.birthDate = birthDate;
     userInput.maritalStatus = maritalStatus;
-    userInput.companyId = userCompany.id;
-    userInput.addressId = userAddress.id;
+
+    if (isNotEmpty(address)) {
+      const userAddress = await this.$userAddress.upsertUserAddress(address);
+      userInput.addressId = userAddress.id;
+    }
+
+    if (isNotEmpty(company)) {
+      const userCompany = await this.$userCompany.upsertUserCompany(company);
+      userInput.companyId = userCompany.id;
+    }
 
     const updateUser = await this.$user.updateUser(userInput);
 
-    const respUser = new UserEntity();
-    respUser.id = updateUser.id;
-    respUser.email = updateUser.email;
-    respUser.name = updateUser.name;
-    respUser.cpf = updateUser.cpf;
-    respUser.gender = updateUser.gender;
-    respUser.document = updateUser.document;
-    respUser.phoneNumber = updateUser.phoneNumber;
-    respUser.birthDate = updateUser.birthDate;
-    respUser.maritalStatus = updateUser.maritalStatus;
-    respUser.address = userAddress;
-    respUser.company = userCompany;
-
-    return respUser;
+    return updateUser;
   }
 
   @UseGuards(GqlAuthGuard)

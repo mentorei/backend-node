@@ -7,7 +7,7 @@ import { MentorInput } from 'src/dto/mentor/mentor.input';
 export class MentorService {
   constructor(private readonly $prisma: PrismaClient) {}
 
-  public async createMentor(userId: string, mentor: MentorInput): Promise<Mentor> {
+  public async createMentor(mentor: MentorInput): Promise<Mentor> {
     return this.$prisma.mentor.create({
       data: {
         linkedin: mentor.linkedin,
@@ -16,7 +16,7 @@ export class MentorService {
         degree: mentor.degree,
         expertise: mentor.expertise,
         valuePerHour: mentor.valuePerHour,
-        userId,
+        userId: mentor.userId,
       },
     });
   }
@@ -56,16 +56,7 @@ export class MentorService {
         degree: mentor.degree,
         expertise: mentor.expertise,
         valuePerHour: mentor.valuePerHour,
-        userId: mentor.userId,
       },
     });
-  }
-
-  public async deleteMentor(id: string): Promise<Mentor> {
-    this.getMentorById(id);
-
-    const result = await this.$prisma.mentor.delete({ where: { id } });
-
-    return result;
   }
 }

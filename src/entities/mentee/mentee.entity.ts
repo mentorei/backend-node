@@ -1,8 +1,6 @@
 import { DegreeType } from '@prisma/client';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-import { UserEntity } from '../user/user.entity';
-
 @ObjectType()
 export class MenteeEntity {
   @Field(() => ID, { nullable: true })
@@ -25,7 +23,4 @@ export class MenteeEntity {
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
-
-  @Field(() => UserEntity, { nullable: true })
-  User?: UserEntity;
 }

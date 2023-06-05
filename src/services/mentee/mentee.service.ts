@@ -7,14 +7,14 @@ import { MenteeInput } from 'src/dto/mentee/mentee.input';
 export class MenteeService {
   constructor(private readonly $prisma: PrismaClient) {}
 
-  public async createMentee(userId: string, mentee: MenteeInput): Promise<Mentee> {
+  public async createMentee(mentee: MenteeInput): Promise<Mentee> {
     return this.$prisma.mentee.create({
       data: {
         linkedin: mentee.linkedin,
         goal: mentee.goal,
         interestArea: mentee.interestArea,
         degree: mentee.degree,
-        userId,
+        userId: mentee.userId,
       },
     });
   }
@@ -50,16 +50,7 @@ export class MenteeService {
         goal: mentee.goal,
         interestArea: mentee.interestArea,
         degree: mentee.degree,
-        userId: mentee.userId,
       },
     });
-  }
-
-  public async deleteMentee(id: string): Promise<Mentee> {
-    this.getMenteeById(id);
-
-    const result = await this.$prisma.mentee.delete({ where: { id } });
-
-    return result;
   }
 }

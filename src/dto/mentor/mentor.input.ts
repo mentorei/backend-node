@@ -7,8 +7,8 @@ import { AvailabilityInput } from '../availability/availability.input';
 
 @InputType()
 export class MentorInput implements Prisma.MentorUncheckedCreateInput {
-  @Field(() => ID)
-  id: string;
+  @Field(() => ID, { nullable: true })
+  id?: string;
 
   @Field(() => String, { nullable: true })
   linkedin?: string;
@@ -28,8 +28,8 @@ export class MentorInput implements Prisma.MentorUncheckedCreateInput {
   @Field(() => Int, { nullable: true })
   valuePerHour?: number;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => Date, { nullable: true })
+  createdAt?: Date;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;

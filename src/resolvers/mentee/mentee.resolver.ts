@@ -3,8 +3,8 @@ import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args } from '@nestjs/graphql';
 
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
-import { MenteeService } from 'src/services/mentee/mentee.service';
 import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
+import { MenteeService } from 'src/services/mentee/mentee.service';
 
 @Resolver()
 export class MenteeResolver {
