@@ -2,15 +2,22 @@ import { NestFactory } from '@nestjs/core';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import * as fs from 'fs';
+import * as cors from 'cors';
 
 import { AppModule } from './app.module';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  const httpsOptions = {
+    key: fs.readFileSync('src/ssl/code.key'),
+    cert: fs.readFileSync('src/ssl/code.crt'),
+  };
 
-  app.enableCors();
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ https: httpsOptions }));
+
+  app.use(cors());
 
   await app.register(fastifyHelmet, {
     contentSecurityPolicy: {
@@ -23,7 +30,7 @@ async function bootstrap() {
       },
     },
   });
-  await app.register(fastifyCsrf);
+
   await app.listen(3000, '0.0.0.0');
 
   if (module.hot) {
