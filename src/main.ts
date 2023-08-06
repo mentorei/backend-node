@@ -23,8 +23,11 @@ async function bootstrap() {
       },
     },
   });
+
+  const PORT = process.env.SERVER_PORT || 0;
+
   await app.register(fastifyCsrf);
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(PORT, '0.0.0.0');
 
   if (module.hot) {
     module.hot.accept();
