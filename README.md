@@ -78,3 +78,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Send Email
+Create a Function (sendEmail)
+Configure the .env
+- EMAIL_HOST 
+- EMAIL_PORT
+- EMAIL_USER
+- EMAIL_SECRET
