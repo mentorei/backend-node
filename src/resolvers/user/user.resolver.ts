@@ -14,6 +14,7 @@ import { UserCompanyInput } from 'src/dto/user-company/user-company.input';
 import { UserAddressInput } from 'src/dto/user-address/user-address.input';
 import { UserAddressService } from 'src/services/user-address/user-address.service';
 import { UserCompanyService } from 'src/services/user-company/user-company.service';
+import { SendEmail } from 'src/utils/sendEmails';
 
 @Resolver()
 export class UserResolver {
@@ -46,6 +47,9 @@ export class UserResolver {
     userAuth.id = userCreated.id;
     userAuth.token = token;
 
+    
+    SendEmail(user.name, user.email)
+
     return userAuth;
   }
 
@@ -64,7 +68,8 @@ export class UserResolver {
     const userAuth = new UserAuthEntity();
     userAuth.id = userLogin.id;
     userAuth.token = token;
-
+    
+    
     return userAuth;
   }
 
