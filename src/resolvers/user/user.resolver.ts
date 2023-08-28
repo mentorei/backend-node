@@ -3,7 +3,6 @@ import { GenderType, MaritalType, User } from '@prisma/client';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
 import { isNotEmpty } from 'src/utils/utils';
-import { encodePassword } from 'src/utils/bcrypt';
 import { UserInput } from 'src/dto/user/user.input';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserEntity } from 'src/entities/user/user.entity';
@@ -36,9 +35,10 @@ export class UserResolver {
     user.email = email;
     user.cpf = cpf;
     user.name = name;
-    user.password = await encodePassword(password);
-
+    user.password = password;
     const userCreated = await this.$user.createUser(user);
+
+    user.id = userCreated.id;
     const token = this.$auth.generateAccess(user);
 
     const userAuth = new UserAuthEntity();
