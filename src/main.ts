@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import fastifyHelmet from '@fastify/helmet';
+import { useContainer } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
@@ -42,9 +44,19 @@ async function bootstrap() {
     },
   });
 
-  const PORT = process.env.SERVER_PORT || 0;
-
   await app.register(fastifyCsrf);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  const PORT = process.env.SERVER_PORT || 0;
   await app.listen(PORT, '0.0.0.0');
 
   if (module.hot) {

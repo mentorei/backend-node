@@ -1,14 +1,30 @@
+import { validate } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 
-import { comparePassword } from 'src/utils/bcrypt';
+import { comparePassword, encodePassword } from 'src/utils/bcrypt';
 import { UserInput } from '../../dto/user/user.input';
+import { CreateUserDTO } from 'src/dto/user/create-user.input';
 
 @Injectable()
 export class UserService {
   constructor(private readonly $prisma: PrismaClient) {}
 
   public async createUser(user: UserInput): Promise<User> {
+    const dto = new CreateUserDTO();
+    dto.name = user.name;
+    dto.email = user.email;
+    dto.password = user.password;
+    dto.cpf = user.cpf;
+
+    const errors = await validate(dto);
+
+    if (errors.length > 0) {
+      throw new Error(Object.values(errors[0].constraints)[0]);
+    }
+
+    user.password = await encodePassword(user.password);
+
     return this.$prisma.user.create({
       data: {
         email: user.email,
