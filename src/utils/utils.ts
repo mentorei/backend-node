@@ -44,3 +44,19 @@ export const cpfValidator = (cpf: string): boolean => {
 
   return true;
 };
+
+export const shortenName = (fullName: string): string => {
+  const names = fullName.split(' ');
+  const firstName = names[0];
+  const lastName = names[names.length - 1];
+  let shortenedName = firstName;
+
+  names.slice(1, -1).forEach((name) => {
+    const initialLetter = name[0];
+    shortenedName += ` ${initialLetter}.`;
+  });
+
+  shortenedName += ` ${lastName}`;
+
+  return shortenedName;
+};

@@ -47,8 +47,7 @@ export class UserResolver {
     userAuth.id = userCreated.id;
     userAuth.token = token;
 
-    
-    SendEmail(user.name, user.email)
+    SendEmail(user.name, user.email);
 
     return userAuth;
   }
@@ -68,8 +67,7 @@ export class UserResolver {
     const userAuth = new UserAuthEntity();
     userAuth.id = userLogin.id;
     userAuth.token = token;
-    
-    
+
     return userAuth;
   }
 

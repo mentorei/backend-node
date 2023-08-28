@@ -69,12 +69,6 @@ $docker run --name mentorei-local -p 5455:5432 -e POSTGRES_USER=mentorei -e POST
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
 Nest is [MIT licensed](LICENSE).
@@ -82,7 +76,7 @@ Nest is [MIT licensed](LICENSE).
 ## Send Email
 Create a Function (sendEmail)
 Configure the .env
-- EMAIL_HOST 
+- EMAIL_HOST
 - EMAIL_PORT
 - EMAIL_USER
 - EMAIL_SECRET

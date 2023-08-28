@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+import { readFile } from 'fs/promises';
 import { NestFactory } from '@nestjs/core';
 import fastifyHelmet from '@fastify/helmet';
 import { useContainer } from 'class-validator';
@@ -5,30 +7,33 @@ import { ValidationPipe } from '@nestjs/common';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
-
 import { AppModule } from './app.module';
 
 declare const module: any;
 
 async function bootstrap() {
-  const sslPaths = {
-    privateKey: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'privkey.pem'),
-    certificate: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'cert.pem'),
-    ca: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'chain.pem'),
-  };
+  let app: any;
 
-  const [privateKey, cert, ca] = await Promise.all([
-    readFile(sslPaths.privateKey, 'utf8'),
-    readFile(sslPaths.certificate, 'utf8'),
-    readFile(sslPaths.ca, 'utf8'),
-  ]);
+  if (process.env.NODE_ENV === 'production') {
+    const sslPaths = {
+      privateKey: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'privkey.pem'),
+      certificate: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'cert.pem'),
+      ca: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'chain.pem'),
+    };
 
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter({ https: { key: privateKey, cert, ca } })
-  );
+    const [privateKey, cert, ca] = await Promise.all([
+      readFile(sslPaths.privateKey, 'utf8'),
+      readFile(sslPaths.certificate, 'utf8'),
+      readFile(sslPaths.ca, 'utf8'),
+    ]);
+
+    app = await NestFactory.create<NestFastifyApplication>(
+      AppModule,
+      new FastifyAdapter({ https: { key: privateKey, cert, ca } })
+    );
+  } else {
+    app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  }
 
   app.enableCors();
 
