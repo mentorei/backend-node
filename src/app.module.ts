@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
+import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
 
@@ -45,6 +46,7 @@ const VALIDATORS = [IsCPFValidator, UniqueUserEmailValidator, UniqueUserCPFValid
       autoSchemaFile: {
         federation: 2,
       },
+      plugins: [ApolloServerPluginInlineTrace()],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
