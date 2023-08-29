@@ -13,7 +13,6 @@ export class SoftSkillService {
         name: softSkill.name,
         level: softSkill.level,
         description: softSkill.description,
-        userId: softSkill.userId,
       },
     });
   }
@@ -41,5 +40,9 @@ export class SoftSkillService {
         description: softSkill.description,
       },
     });
+  }
+
+  public async getAllMentors(): Promise<SoftSkill[]> {
+    return this.$prisma.softSkill.findMany();
   }
 }
