@@ -2,10 +2,10 @@ import { validate } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 
-import { comparePassword, encodePassword } from 'src/utils/bcrypt';
 import { UserInput } from '../../dto/user/user.input';
 import { CreateUserDTO } from 'src/dto/user/create-user.input';
 import { UpdateUserDTO } from 'src/dto/user/update-user.input';
+import { comparePassword, encodePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UserService {
@@ -50,7 +50,7 @@ export class UserService {
 
   public async getUserById(id: string): Promise<User> {
     const user = await this.$prisma.user.findUnique({
-      where: { id },
+      where: { id, deleted: null },
       include: {
         address: true,
         company: true,
@@ -70,7 +70,7 @@ export class UserService {
 
   public async getUserByEmail(email: string): Promise<User> {
     const existingUser = await this.$prisma.user.findUnique({
-      where: { email },
+      where: { email, deleted: null },
     });
 
     if (!existingUser) {
@@ -99,7 +99,7 @@ export class UserService {
       throw new Error(Object.values(errors[0].constraints)[0]);
     }
 
-    const existingUser = await this.$prisma.user.findUnique({ where: { id: user.id } });
+    const existingUser = await this.$prisma.user.findUnique({ where: { id: user.id, deleted: null } });
 
     if (!existingUser) {
       throw new Error('Usuário não encontrado.');
@@ -126,13 +126,13 @@ export class UserService {
   }
 
   public async deleteUser(id: string): Promise<User> {
-    const existingUser = await this.$prisma.user.findUnique({ where: { id } });
+    const existingUser = await this.$prisma.user.findUnique({ where: { id, deleted: null } });
 
     if (!existingUser) {
       throw new Error('Usuário não encontrado.');
     }
 
-    const result = await this.$prisma.user.delete({ where: { id } });
+    const result = await this.$prisma.user.update({ where: { id }, data: { deleted: new Date() } });
 
     return result;
   }

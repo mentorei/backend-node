@@ -1,7 +1,8 @@
+import { Prisma } from '@prisma/client';
 import { Field, ID, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
-export class UpsertUserAddressInput {
+export class UpsertUserAddressInput implements Prisma.UserAddressUncheckedUpdateInput {
   @Field(() => ID, { nullable: true })
   id?: string;
 

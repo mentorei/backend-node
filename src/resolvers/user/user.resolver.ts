@@ -1,5 +1,4 @@
 import { UseGuards } from '@nestjs/common';
-import { GraphQLJSONObject } from 'graphql-scalars';
 import { GenderType, MaritalType, User } from '@prisma/client';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
@@ -16,6 +15,8 @@ import { SoftSkillService } from 'src/services/soft-skill/soft-skill.service';
 import { HardSkillService } from 'src/services/hard-skill/hard-skill.service';
 import { UserAddressService } from 'src/services/user-address/user-address.service';
 import { UserCompanyService } from 'src/services/user-company/user-company.service';
+import { UpsertUserCompanyInput } from 'src/dto/user-company/upsert-user-company.input';
+import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
 
 @Resolver()
 export class UserResolver {
@@ -84,8 +85,8 @@ export class UserResolver {
     @Args('phoneNumber', { type: () => String, nullable: true }) phoneNumber?: string,
     @Args('birthDate', { type: () => String, nullable: true }) birthDate?: string,
     @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
-    @Args('address', { type: () => GraphQLJSONObject, nullable: true }) address?: any,
-    @Args('company', { type: () => GraphQLJSONObject, nullable: true }) company?: any,
+    @Args('address', { type: () => UpsertUserAddressInput, nullable: true }) address?: any,
+    @Args('company', { type: () => UpsertUserCompanyInput, nullable: true }) company?: any,
     @Args('softSkills', { type: () => [String], nullable: true }) softSkills?: Array<string>,
     @Args('hardSkills', { type: () => [String], nullable: true }) hardSkills?: Array<string>
   ): Promise<User> {
@@ -126,5 +127,11 @@ export class UserResolver {
   @Query(() => UserEntity, { name: 'getUserById' })
   public getUserById(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.$user.getUserById(id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => UserEntity, { name: 'deleteUser' })
+  public deleteUser(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.$user.deleteUser(id);
   }
 }

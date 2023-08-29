@@ -1,36 +1,47 @@
+import { Type } from 'class-transformer';
 import { GenderType, MaritalType } from '@prisma/client';
-import { IsArray, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+
+import { UpdateUserCompanyDTO } from '../user-company/update-user-company.input';
+import { UpdateUserAddressDTO } from '../user-address/update-user-address.input';
 
 export class UpdateUserDTO {
-  @IsUUID(undefined, { message: 'ID de usuário inválido' })
+  @IsUUID(undefined, { message: 'ID de usuário inválido.' })
   id: string;
 
   @IsOptional()
-  @IsString({ message: 'O gênero deve ser uma string válida.' })
+  @IsEnum(GenderType, { message: 'O gênero deve ser válido.' })
   gender?: GenderType;
 
   @IsOptional()
-  @IsString({ message: 'O codumento deve ser uma string válida.' })
+  @IsString()
+  @IsNotEmpty({ message: 'O documento deve ser uma string válida.' })
   document?: string;
 
   @IsOptional()
-  @IsString({ message: 'O celular deve ser uma string válida.' })
+  @IsString()
+  @IsNotEmpty({ message: 'O celular deve ser uma string válida.' })
   phoneNumber?: string;
 
   @IsOptional()
-  @IsString({ message: 'A data de nascimento deve ser uma string válida.' })
+  @IsString()
+  @IsNotEmpty({ message: 'A data de nascimento deve ser uma string válida.' })
   birthDate?: string;
 
   @IsOptional()
-  @IsString({ message: 'O estado civil deve ser uma string válida.' })
+  @IsEnum(MaritalType, { message: 'O estado civil deve ser válido.' })
   maritalStatus?: MaritalType;
 
   @IsOptional()
-  @IsObject({ message: 'A empresa deve ser um objeto válido.' })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UpdateUserCompanyDTO)
   company?: any;
 
   @IsOptional()
-  @IsObject({ message: 'O endereço deve ser um objeto válido.' })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UpdateUserAddressDTO)
   address?: any;
 
   @IsOptional()
