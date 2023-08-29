@@ -5,6 +5,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { comparePassword, encodePassword } from 'src/utils/bcrypt';
 import { UserInput } from '../../dto/user/user.input';
 import { CreateUserDTO } from 'src/dto/user/create-user.input';
+import { UpdateUserDTO } from 'src/dto/user/update-user.input';
 
 @Injectable()
 export class UserService {
@@ -53,8 +54,8 @@ export class UserService {
       include: {
         address: true,
         company: true,
-        softSkill: true,
-        hardSkill: true,
+        softSkills: true,
+        hardSkills: true,
         Mentee: true,
         Mentor: true,
       },
@@ -80,6 +81,24 @@ export class UserService {
   }
 
   public async updateUser(user: UserInput): Promise<User> {
+    const dto = new UpdateUserDTO();
+    dto.id = user.id;
+    dto.gender = user.gender;
+    dto.document = user.document;
+    dto.phoneNumber = user.phoneNumber;
+    dto.birthDate = user.birthDate;
+    dto.maritalStatus = user.maritalStatus;
+    dto.company = user.company;
+    dto.address = user.address;
+    dto.hardSkills = user.hardSkills;
+    dto.softSkills = user.softSkills;
+
+    const errors = await validate(dto);
+
+    if (errors.length > 0) {
+      throw new Error(Object.values(errors[0].constraints)[0]);
+    }
+
     const existingUser = await this.$prisma.user.findUnique({ where: { id: user.id } });
 
     if (!existingUser) {
@@ -96,6 +115,12 @@ export class UserService {
         maritalStatus: user.maritalStatus,
         companyId: user.companyId,
         addressId: user.addressId,
+        softSkills: user.softSkills ? { connect: user.softSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
+        hardSkills: user.hardSkills ? { connect: user.hardSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
+      },
+      include: {
+        softSkills: true,
+        hardSkills: true,
       },
     });
   }

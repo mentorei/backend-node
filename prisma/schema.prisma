@@ -22,8 +22,8 @@ model User {
   companyId     String?      @unique
   address       UserAddress? @relation(fields: [addressId], references: [id])
   company       UserCompany? @relation(fields: [companyId], references: [id])
-  hardSkill     HardSkill[]  @relation()
-  softSkill     SoftSkill[]  @relation()
+  hardSkills    HardSkill[]  @relation()
+  softSkills    SoftSkill[]  @relation()
   Mentor        Mentor?      @relation()
   Mentee        Mentee?      @relation()
   createdAt     DateTime     @default(now())
@@ -62,11 +62,10 @@ model HardSkill {
   name        String
   level       LevelType
   description String?
-  userId      String    @unique
-  user        User      @relation(fields: [userId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deleted     DateTime?
+  Users       User[]    @relation()
 }
 
 model SoftSkill {
@@ -77,7 +76,7 @@ model SoftSkill {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deleted     DateTime?
-  User        User[]    @relation()
+  Users       User[]    @relation()
 }
 
 model Mentor {

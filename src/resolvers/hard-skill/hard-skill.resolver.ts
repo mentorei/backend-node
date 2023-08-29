@@ -20,7 +20,6 @@ export class HardSkillResolver {
     user.name = name;
     user.level = level;
     user.description = description;
-    user.userId = userId;
 
     const userCreated = await this.$hardSkill.createHardSkill(user);
 

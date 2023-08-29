@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient, HardSkill } from '@prisma/client';
 
 import { HardSkillInput } from 'src/dto/hard-skill/hard-skill.input';
+import { HardSkillEntity } from 'src/entities/hard-skill/hard-skill.entity';
 
 @Injectable()
 export class HardSkillService {
@@ -13,7 +14,6 @@ export class HardSkillService {
         name: hardSkill.name,
         level: hardSkill.level,
         description: hardSkill.description,
-        userId: hardSkill.userId,
       },
     });
   }
@@ -41,5 +41,17 @@ export class HardSkillService {
         description: hardSkill.description,
       },
     });
+  }
+
+  public async getManyHardSkillById(ids: Array<string>): Promise<HardSkillEntity[]> {
+    const user = await this.$prisma.hardSkill.findMany({
+      where: { id: { in: ids } },
+    });
+
+    if (!user) {
+      throw new Error('Não foi possível encontrar estas HardSkills.');
+    }
+
+    return user;
   }
 }

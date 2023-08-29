@@ -22,7 +22,6 @@ export class SoftSkillResolver {
     user.name = name;
     user.level = level;
     user.description = description;
-    user.userId = userId;
 
     const userCreated = await this.$softSkill.createSoftSkill(user);
 
@@ -32,6 +31,6 @@ export class SoftSkillResolver {
   @UseGuards(GqlAuthGuard)
   @Query(() => [SoftSkillEntity], { name: 'getAllSoftSkills' })
   public getAllSoftSkills(): Promise<SoftSkill[]> {
-    return this.$softSkill.getAllMentors();
+    return this.$softSkill.getAllSoftSkills();
   }
 }
