@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Mentee, PrismaClient } from '@prisma/client';
+import { Mentee, Prisma, PrismaClient } from '@prisma/client';
 
 import { MenteeInput } from 'src/dto/mentee/mentee.input';
+import { UpsertMenteeInput } from 'src/dto/mentee/upsert-mentee.input';
 
 @Injectable()
 export class MenteeService {
@@ -14,7 +15,6 @@ export class MenteeService {
         goal: mentee.goal,
         interestArea: mentee.interestArea,
         degree: mentee.degree,
-        userId: mentee.userId,
       },
     });
   }
@@ -23,7 +23,7 @@ export class MenteeService {
     return this.$prisma.mentee.findMany({
       include: {
         Connection: true,
-        user: true,
+        User: true,
       },
     });
   }
@@ -51,6 +51,21 @@ export class MenteeService {
         interestArea: mentee.interestArea,
         degree: mentee.degree,
       },
+    });
+  }
+
+  public async upsertMentee(mentor: UpsertMenteeInput): Promise<Mentee> {
+    const data: Prisma.MenteeUncheckedCreateInput = {
+      linkedin: mentor.linkedin,
+      goal: mentor.goal,
+      interestArea: mentor.interestArea,
+      degree: mentor.degree,
+    };
+
+    return this.$prisma.mentee.upsert({
+      where: { id: mentor.id || '' },
+      create: data,
+      update: data,
     });
   }
 }

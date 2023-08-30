@@ -33,6 +33,9 @@ export class MentorEntity {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
+  @Field(() => Date, { nullable: true })
+  deleted?: Date;
+
   @Field(() => [EvaluationEntity], { nullable: true })
   evaluation?: Array<EvaluationEntity>;
 

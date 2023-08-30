@@ -9,7 +9,12 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserEntity } from 'src/entities/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user/user.service';
+import { SkillsEntity } from 'src/entities/user/skills.entity';
+import { MentorService } from 'src/services/mentor/mentor.service';
+import { MenteeService } from 'src/services/mentee/mentee.service';
 import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
+import { UpsertMentorInput } from 'src/dto/mentor/upsert-mentor.input';
+import { UpsertMenteeInput } from 'src/dto/mentee/upsert-mentee.input';
 import { UpdateUserEntity } from 'src/entities/user/update-user.entity';
 import { SoftSkillService } from 'src/services/soft-skill/soft-skill.service';
 import { HardSkillService } from 'src/services/hard-skill/hard-skill.service';
@@ -17,13 +22,14 @@ import { UserAddressService } from 'src/services/user-address/user-address.servi
 import { UserCompanyService } from 'src/services/user-company/user-company.service';
 import { UpsertUserCompanyInput } from 'src/dto/user-company/upsert-user-company.input';
 import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
-import { SkillsEntity } from 'src/entities/user/skills.entity';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private $user: UserService,
     private $auth: AuthService,
+    private $mentor: MentorService,
+    private $mentee: MenteeService,
     private $softSkill: SoftSkillService,
     private $hardSkill: HardSkillService,
     private $userAddress: UserAddressService,
@@ -88,6 +94,8 @@ export class UserResolver {
     @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
     @Args('address', { type: () => UpsertUserAddressInput, nullable: true }) address?: any,
     @Args('company', { type: () => UpsertUserCompanyInput, nullable: true }) company?: any,
+    @Args('mentor', { type: () => UpsertMentorInput, nullable: true }) mentor?: any,
+    @Args('mentee', { type: () => UpsertMenteeInput, nullable: true }) mentee?: any,
     @Args('softSkills', { type: () => [String], nullable: true }) softSkills?: Array<string>,
     @Args('hardSkills', { type: () => [String], nullable: true }) hardSkills?: Array<string>
   ): Promise<User> {
@@ -107,6 +115,16 @@ export class UserResolver {
     if (company && isNotEmpty(company)) {
       const userCompany = await this.$userCompany.upsertUserCompany(company);
       userInput.companyId = userCompany.id;
+    }
+
+    if (mentor && isNotEmpty(mentor)) {
+      const dataMentor = await this.$mentor.upsertMentor(mentor);
+      userInput.mentorId = dataMentor.id;
+    }
+
+    if (mentee && isNotEmpty(mentee)) {
+      const dataMentee = await this.$mentee.upsertMentee(mentee);
+      userInput.menteeId = dataMentee.id;
     }
 
     if (softSkills && softSkills.length > 0) {

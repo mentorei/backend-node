@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Mentor, PrismaClient } from '@prisma/client';
+import { Mentor, Prisma, PrismaClient } from '@prisma/client';
 
 import { MentorInput } from 'src/dto/mentor/mentor.input';
+import { UpsertMentorInput } from 'src/dto/mentor/upsert-mentor.input';
 
 @Injectable()
 export class MentorService {
@@ -16,7 +17,6 @@ export class MentorService {
         degree: mentor.degree,
         expertise: mentor.expertise,
         valuePerHour: mentor.valuePerHour,
-        userId: mentor.userId,
       },
     });
   }
@@ -27,7 +27,7 @@ export class MentorService {
         availability: true,
         evaluation: true,
         Connection: true,
-        user: true,
+        User: true,
       },
     });
   }
@@ -57,6 +57,23 @@ export class MentorService {
         expertise: mentor.expertise,
         valuePerHour: mentor.valuePerHour,
       },
+    });
+  }
+
+  public async upsertMentor(mentor: UpsertMentorInput): Promise<Mentor> {
+    const data: Prisma.MentorUncheckedCreateInput = {
+      linkedin: mentor.linkedin,
+      occupation: mentor.linkedin,
+      experience: mentor.linkedin,
+      degree: mentor.degree,
+      expertise: mentor.linkedin,
+      valuePerHour: mentor.valuePerHour,
+    };
+
+    return this.$prisma.mentor.upsert({
+      where: { id: mentor.id || '' },
+      create: data,
+      update: data,
     });
   }
 }

@@ -20,12 +20,14 @@ model User {
   maritalStatus MaritalType?
   addressId     String?      @unique
   companyId     String?      @unique
+  mentorId      String?      @unique
+  menteeId      String?      @unique
   address       UserAddress? @relation(fields: [addressId], references: [id])
   company       UserCompany? @relation(fields: [companyId], references: [id])
   hardSkills    HardSkill[]  @relation()
   softSkills    SoftSkill[]  @relation()
-  Mentor        Mentor?      @relation()
-  Mentee        Mentee?      @relation()
+  Mentor        Mentor?      @relation(fields: [mentorId], references: [id])
+  Mentee        Mentee?      @relation(fields: [menteeId], references: [id])
   createdAt     DateTime     @default(now())
   updatedAt     DateTime?    @updatedAt
   deleted       DateTime?
@@ -87,8 +89,7 @@ model Mentor {
   degree       DegreeType?
   expertise    String?
   valuePerHour Int?
-  userId       String         @unique
-  user         User           @relation(fields: [userId], references: [id])
+  User         User?          @relation()
   evaluation   Evaluation[]   @relation()
   availability Availability[] @relation()
   Connection   Connection?    @relation()
@@ -126,8 +127,7 @@ model Mentee {
   goal         String?
   interestArea String?
   degree       DegreeType?
-  userId       String      @unique
-  user         User        @relation(fields: [userId], references: [id])
+  User         User?       @relation()
   Connection   Connection? @relation()
   createdAt    DateTime    @default(now())
   updatedAt    DateTime?   @updatedAt

@@ -38,10 +38,7 @@ export class MentorInput implements Prisma.MentorUncheckedCreateInput {
   deleted?: Date;
 
   @Field(() => UserInput, { nullable: true })
-  User?: UserInput;
-
-  @Field(() => String)
-  userId: string;
+  User?: Prisma.UserUncheckedCreateNestedOneWithoutMentorInput;
 
   @Field(() => [EvaluationInput], { nullable: true })
   evaluation?: Prisma.EvaluationUncheckedCreateNestedManyWithoutMentorInput;

@@ -1,8 +1,6 @@
 import { WeekdayType } from '@prisma/client';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-import { MentorEntity } from 'src/entities/mentor/mentor.entity';
-
 @ObjectType()
 export class AvailabilityEntity {
   @Field(() => ID)
@@ -25,10 +23,4 @@ export class AvailabilityEntity {
 
   @Field(() => Date, { nullable: true })
   deleted?: Date;
-
-  @Field(() => String)
-  mentorId: string;
-
-  @Field(() => MentorEntity, { nullable: true })
-  mentor?: MentorEntity;
 }

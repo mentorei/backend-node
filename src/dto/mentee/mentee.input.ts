@@ -30,8 +30,5 @@ export class MenteeInput implements Prisma.MenteeUncheckedCreateInput {
   deleted?: Date;
 
   @Field(() => UserInput, { nullable: true })
-  User?: UserInput;
-
-  @Field(() => String)
-  userId: string;
+  User?: Prisma.UserUncheckedCreateNestedOneWithoutMentorInput;
 }
