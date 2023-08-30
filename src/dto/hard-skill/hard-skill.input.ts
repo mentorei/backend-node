@@ -26,9 +26,6 @@ export class HardSkillInput implements Prisma.HardSkillUncheckedCreateInput {
   @Field(() => Date, { nullable: true })
   deleted?: Date;
 
-  @Field(() => String)
-  userId: string;
-
-  @Field(() => UserInput, { nullable: true })
-  user?: UserInput;
+  @Field(() => [UserInput], { nullable: true })
+  users?: Array<UserInput>;
 }

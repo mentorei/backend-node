@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, UserAddress } from '@prisma/client';
 
-import { UserAddressInput } from 'src/dto/user-address/user-address.input';
+import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
 
 @Injectable()
 export class UserAddressService {
   constructor(private readonly $prisma: PrismaClient) {}
 
-  public async upsertUserAddress(userAddress: UserAddressInput): Promise<UserAddress> {
+  public async upsertUserAddress(userAddress: UpsertUserAddressInput): Promise<UserAddress> {
     return this.$prisma.userAddress.upsert({
       where: { id: userAddress.id || '' },
       create: {

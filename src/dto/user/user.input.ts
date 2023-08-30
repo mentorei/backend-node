@@ -60,8 +60,8 @@ export class UserInput implements Prisma.UserUncheckedCreateInput {
   addressId?: string;
 
   @Field(() => [HardSkillInput], { nullable: true })
-  hardSkill?: Prisma.HardSkillUncheckedCreateNestedManyWithoutUserInput;
+  hardSkills?: any;
 
   @Field(() => [SoftSkillInput], { nullable: true })
-  softSkill?: Prisma.SoftSkillUncheckedCreateNestedManyWithoutUserInput;
+  softSkills?: any;
 }

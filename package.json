@@ -41,6 +41,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "graphql": "^16.6.0",
+    "graphql-scalars": "^1.22.2",
     "nodemailer": "^6.9.4",
     "nodemodule": "^0.3.0",
     "passport": "^0.6.0",

@@ -1,5 +1,7 @@
-import { LevelType } from '@prisma/client';
+import { LevelType, Prisma } from '@prisma/client';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+
+import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class HardSkillEntity {
@@ -20,4 +22,10 @@ export class HardSkillEntity {
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  deleted?: Date;
+
+  @Field(() => [UserEntity], { nullable: true })
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutHardSkillsInput;
 }

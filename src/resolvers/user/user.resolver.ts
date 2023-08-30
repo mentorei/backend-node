@@ -3,23 +3,28 @@ import { GenderType, MaritalType, User } from '@prisma/client';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
 import { isNotEmpty } from 'src/utils/utils';
+import { SendEmail } from 'src/utils/sendEmails';
 import { UserInput } from 'src/dto/user/user.input';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserEntity } from 'src/entities/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user/user.service';
 import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
-import { UserCompanyInput } from 'src/dto/user-company/user-company.input';
-import { UserAddressInput } from 'src/dto/user-address/user-address.input';
+import { UpdateUserEntity } from 'src/entities/user/update-user.entity';
+import { SoftSkillService } from 'src/services/soft-skill/soft-skill.service';
+import { HardSkillService } from 'src/services/hard-skill/hard-skill.service';
 import { UserAddressService } from 'src/services/user-address/user-address.service';
 import { UserCompanyService } from 'src/services/user-company/user-company.service';
-import { SendEmail } from 'src/utils/sendEmails';
+import { UpsertUserCompanyInput } from 'src/dto/user-company/upsert-user-company.input';
+import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private $user: UserService,
     private $auth: AuthService,
+    private $softSkill: SoftSkillService,
+    private $hardSkill: HardSkillService,
     private $userAddress: UserAddressService,
     private $userCompany: UserCompanyService
   ) {}
@@ -71,7 +76,8 @@ export class UserResolver {
     return userAuth;
   }
 
-  @Mutation(() => UserEntity, { name: 'updateUser' })
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => UpdateUserEntity, { name: 'updateUser' })
   public async updateUser(
     @Args('id', { type: () => String }) id: string,
     @Args('gender', { type: () => GenderType, nullable: true }) gender?: GenderType,
@@ -79,9 +85,11 @@ export class UserResolver {
     @Args('phoneNumber', { type: () => String, nullable: true }) phoneNumber?: string,
     @Args('birthDate', { type: () => String, nullable: true }) birthDate?: string,
     @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
-    @Args('address', { type: () => UserAddressInput, nullable: true }) address?: UserAddressInput,
-    @Args('company', { type: () => UserCompanyInput, nullable: true }) company?: UserCompanyInput
-  ): Promise<UserEntity> {
+    @Args('address', { type: () => UpsertUserAddressInput, nullable: true }) address?: any,
+    @Args('company', { type: () => UpsertUserCompanyInput, nullable: true }) company?: any,
+    @Args('softSkills', { type: () => [String], nullable: true }) softSkills?: Array<string>,
+    @Args('hardSkills', { type: () => [String], nullable: true }) hardSkills?: Array<string>
+  ): Promise<User> {
     const userInput = new UserInput();
     userInput.id = id;
     userInput.gender = gender;
@@ -90,14 +98,24 @@ export class UserResolver {
     userInput.birthDate = birthDate;
     userInput.maritalStatus = maritalStatus;
 
-    if (isNotEmpty(address)) {
+    if (address && isNotEmpty(address)) {
       const userAddress = await this.$userAddress.upsertUserAddress(address);
       userInput.addressId = userAddress.id;
     }
 
-    if (isNotEmpty(company)) {
+    if (company && isNotEmpty(company)) {
       const userCompany = await this.$userCompany.upsertUserCompany(company);
       userInput.companyId = userCompany.id;
+    }
+
+    if (softSkills && softSkills.length > 0) {
+      const softs = await this.$softSkill.getManySoftSkillById(softSkills);
+      userInput.softSkills = softs;
+    }
+
+    if (hardSkills && hardSkills.length > 0) {
+      const hards = await this.$hardSkill.getManyHardSkillById(hardSkills);
+      userInput.hardSkills = hards;
     }
 
     const updateUser = await this.$user.updateUser(userInput);
@@ -109,5 +127,11 @@ export class UserResolver {
   @Query(() => UserEntity, { name: 'getUserById' })
   public getUserById(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.$user.getUserById(id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => UserEntity, { name: 'deleteUser' })
+  public deleteUser(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.$user.deleteUser(id);
   }
 }

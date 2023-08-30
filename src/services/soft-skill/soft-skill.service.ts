@@ -23,7 +23,7 @@ export class SoftSkillService {
     });
 
     if (!user) {
-      throw new Error('Não foi possível encontrar esta habilidade.');
+      throw new Error('Não foi possível encontrar esta SoftSkill.');
     }
 
     return user;
@@ -42,7 +42,19 @@ export class SoftSkillService {
     });
   }
 
-  public async getAllMentors(): Promise<SoftSkill[]> {
+  public async getAllSoftSkills(): Promise<SoftSkill[]> {
     return this.$prisma.softSkill.findMany();
+  }
+
+  public async getManySoftSkillById(ids: Array<string>): Promise<SoftSkill[]> {
+    const user = await this.$prisma.softSkill.findMany({
+      where: { id: { in: ids } },
+    });
+
+    if (!user) {
+      throw new Error('Não foi possível encontrar estas SoftSkills.');
+    }
+
+    return user;
   }
 }
