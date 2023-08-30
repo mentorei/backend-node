@@ -21,6 +21,7 @@ export class MenteeService {
 
   public async getAllMentees(): Promise<Mentee[]> {
     return this.$prisma.mentee.findMany({
+      where: { deleted: null },
       include: {
         Connection: true,
         User: true,
@@ -30,7 +31,7 @@ export class MenteeService {
 
   public async getMenteeById(id: string): Promise<Mentee> {
     const user = await this.$prisma.mentee.findUnique({
-      where: { id },
+      where: { id, deleted: null },
     });
 
     if (!user) {
@@ -67,5 +68,17 @@ export class MenteeService {
       create: data,
       update: data,
     });
+  }
+
+  public async deleteMentee(id: string): Promise<Mentee> {
+    const existingMentee = await this.$prisma.mentee.findUnique({ where: { id, deleted: null } });
+
+    if (!existingMentee) {
+      throw new Error('Perfil de mentorado não encontrado.');
+    }
+
+    const result = await this.$prisma.mentee.update({ where: { id }, data: { deleted: new Date() } });
+
+    return result;
   }
 }
