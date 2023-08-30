@@ -17,6 +17,7 @@ import { UserAddressService } from 'src/services/user-address/user-address.servi
 import { UserCompanyService } from 'src/services/user-company/user-company.service';
 import { UpsertUserCompanyInput } from 'src/dto/user-company/upsert-user-company.input';
 import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
+import { SkillsEntity } from 'src/entities/user/skills.entity';
 
 @Resolver()
 export class UserResolver {
@@ -124,14 +125,25 @@ export class UserResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => UserEntity, { name: 'deleteUser' })
+  public deleteUser(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.$user.deleteUser(id);
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Query(() => UserEntity, { name: 'getUserById' })
   public getUserById(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.$user.getUserById(id);
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => UserEntity, { name: 'deleteUser' })
-  public deleteUser(@Args('id', { type: () => String }) id: string): Promise<User> {
-    return this.$user.deleteUser(id);
+  @Query(() => SkillsEntity, { name: 'listSkills' })
+  public async listSkills(): Promise<SkillsEntity> {
+    const skills = new SkillsEntity();
+
+    skills.hardSkills = await this.$hardSkill.getAllHardSkills();
+    skills.softSkills = await this.$softSkill.getAllSoftSkills();
+
+    return skills;
   }
 }
