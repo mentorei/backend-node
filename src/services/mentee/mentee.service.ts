@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Mentee, PrismaClient } from '@prisma/client';
+import { Mentee, Prisma, PrismaClient } from '@prisma/client';
 
 import { MenteeInput } from 'src/dto/mentee/mentee.input';
+import { UpsertMenteeInput } from 'src/dto/mentee/upsert-mentee.input';
 
 @Injectable()
 export class MenteeService {
@@ -14,23 +15,23 @@ export class MenteeService {
         goal: mentee.goal,
         interestArea: mentee.interestArea,
         degree: mentee.degree,
-        userId: mentee.userId,
       },
     });
   }
 
   public async getAllMentees(): Promise<Mentee[]> {
     return this.$prisma.mentee.findMany({
+      where: { deleted: null },
       include: {
         Connection: true,
-        user: true,
+        User: true,
       },
     });
   }
 
   public async getMenteeById(id: string): Promise<Mentee> {
     const user = await this.$prisma.mentee.findUnique({
-      where: { id },
+      where: { id, deleted: null },
     });
 
     if (!user) {
@@ -52,5 +53,32 @@ export class MenteeService {
         degree: mentee.degree,
       },
     });
+  }
+
+  public async upsertMentee(mentor: UpsertMenteeInput): Promise<Mentee> {
+    const data: Prisma.MenteeUncheckedCreateInput = {
+      linkedin: mentor.linkedin,
+      goal: mentor.goal,
+      interestArea: mentor.interestArea,
+      degree: mentor.degree,
+    };
+
+    return this.$prisma.mentee.upsert({
+      where: { id: mentor.id || '' },
+      create: data,
+      update: data,
+    });
+  }
+
+  public async deleteMentee(id: string): Promise<Mentee> {
+    const existingMentee = await this.$prisma.mentee.findUnique({ where: { id, deleted: null } });
+
+    if (!existingMentee) {
+      throw new Error('Perfil de mentorado não encontrado.');
+    }
+
+    const result = await this.$prisma.mentee.update({ where: { id }, data: { deleted: new Date() } });
+
+    return result;
   }
 }

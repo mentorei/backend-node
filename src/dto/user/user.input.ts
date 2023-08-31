@@ -5,6 +5,8 @@ import { HardSkillInput } from '../hard-skill/hard-skill.input';
 import { SoftSkillInput } from '../soft-skill/soft-skill.input';
 import { UserCompanyInput } from '../user-company/user-company.input';
 import { UserAddressInput } from '../user-address/user-address.input';
+import { MentorInput } from '../mentor/mentor.input';
+import { MenteeInput } from '../mentee/mentee.input';
 
 @InputType()
 export class UserInput implements Prisma.UserUncheckedCreateInput {
@@ -58,6 +60,18 @@ export class UserInput implements Prisma.UserUncheckedCreateInput {
 
   @Field(() => String, { nullable: true })
   addressId?: string;
+
+  @Field(() => MentorInput, { nullable: true })
+  mentor?: MentorInput;
+
+  @Field(() => String, { nullable: true })
+  mentorId?: string;
+
+  @Field(() => MenteeInput, { nullable: true })
+  mentee?: MenteeInput;
+
+  @Field(() => String, { nullable: true })
+  menteeId?: string;
 
   @Field(() => [HardSkillInput], { nullable: true })
   hardSkills?: any;

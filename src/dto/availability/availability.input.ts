@@ -30,5 +30,5 @@ export class AvailabilityInput implements Prisma.AvailabilityUncheckedCreateInpu
   mentorId: string;
 
   @Field(() => MentorEntity, { nullable: true })
-  mentor?: MentorEntity;
+  mentor?: Prisma.AvailabilityUncheckedUpdateManyWithoutMentorNestedInput;
 }

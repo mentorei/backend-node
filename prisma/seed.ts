@@ -3,7 +3,10 @@ import { Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const data: Array<Prisma.SoftSkillCreateManyInput> = [
+  /**
+   * Load data
+   */
+  const hardSkills: Array<Prisma.HardSkillCreateManyInput> = [
     {
       id: 'a7fefc11-bdc0-48d5-922c-031309cb60bf',
       name: 'HTML, CSS e Javascript',
@@ -31,38 +34,47 @@ async function main() {
       description:
         'Python é uma linguagem de programação poderosa e fácil de aprender, conhecida por sua simplicidade e legibilidade, sendo amplamente utilizada em diversas áreas, desde desenvolvimento web até análise de dados.',
     },
+  ];
+  const softSkills: Array<Prisma.SoftSkillCreateManyInput> = [
     {
       id: 'eee087a3-d6e7-4eb1-a062-8d26ac00e9ef',
-      name: 'Dart',
+      name: 'Comunicação',
       level: 'EXPERT',
       description:
-        'Dart é uma linguagem de programação desenvolvida pela Google, que permite escrever código de forma eficiente e escalável para desenvolvimento web, aplicativos móveis e até mesmo para criação de aplicações de inteligência artificial.',
+        'A habilidade de dialogar com colegas de trabalho para evitar conflitos, resolver divergências e eliminar ruídos que prejudicam a realização de tarefas.',
     },
     {
       id: 'b446a0da-a82e-4c0a-9aa1-ebef0e45aca3',
-      name: 'Cloud AWS',
+      name: 'Liderança',
       level: 'ADVANCED',
       description:
-        'AWS (Amazon Web Services) é uma plataforma de computação em nuvem que oferece uma ampla gama de serviços, como armazenamento, computação, bancos de dados e inteligência artificial, permitindo às empresas escalabilidade, flexibilidade e segurança para hospedar seus aplicativos e armazenar seus dados na nuvem.',
+        'A capacidade de inspirar funcionários e motivar equipes a entregar resultados, sabendo quando servir de exemplo, quando delegar tarefas e como cobrar desempenho sem constranger o time.',
     },
     {
       id: '0524e7fc-d594-437d-899a-b3e059d46b39',
-      name: 'Segurança da informação',
+      name: 'Criatividade',
       level: 'UPPER_INTERMEDIATE',
       description:
-        'Segurança da informação é um conjunto de medidas e práticas voltadas para proteger as informações, sistemas e redes de uma organização, garantindo sua confidencialidade, integridade e disponibilidade contra ameaças internas e externas.',
+        'Tem a ver com a capacidade de inovação, de pensar fora do status quo e de apresentar soluções diferentes para problemas antigos, de maneira diferente do padrão.',
     },
     {
       id: '079ebf9f-476f-4a3e-b459-bf6aa8474429',
-      name: 'Go',
+      name: 'Proatividade',
       level: 'INTERMEDIATE',
       description:
-        'Go (também conhecida como Golang) é uma linguagem de programação open source desenvolvida pela Google, conhecida por sua simplicidade, eficiência e suporte à concorrência, sendo amplamente utilizada no desenvolvimento de aplicativos web e sistemas distribuídos.',
+        'Capacidade de arregaçar as mangas, avaliar cenários e encontrar caminhos para resolver questões que impedem os resultados ou atrapalham a produtividade.',
     },
   ];
 
+  /**
+   * Init transactions
+   */
+  await prisma.hardSkill.createMany({
+    data: hardSkills,
+    skipDuplicates: true,
+  });
   await prisma.softSkill.createMany({
-    data,
+    data: softSkills,
     skipDuplicates: true,
   });
 }

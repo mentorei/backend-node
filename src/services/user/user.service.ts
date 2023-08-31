@@ -90,6 +90,8 @@ export class UserService {
     dto.maritalStatus = user.maritalStatus;
     dto.company = user.company;
     dto.address = user.address;
+    dto.mentee = user.mentee;
+    dto.mentor = user.mentor;
     dto.hardSkills = user.hardSkills;
     dto.softSkills = user.softSkills;
 
@@ -115,12 +117,10 @@ export class UserService {
         maritalStatus: user.maritalStatus,
         companyId: user.companyId,
         addressId: user.addressId,
+        menteeId: user.menteeId,
+        mentorId: user.mentorId,
         softSkills: user.softSkills ? { connect: user.softSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
         hardSkills: user.hardSkills ? { connect: user.hardSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
-      },
-      include: {
-        softSkills: true,
-        hardSkills: true,
       },
     });
   }

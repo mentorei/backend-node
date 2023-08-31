@@ -2,7 +2,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateUserCompanyDTO {
   @IsOptional()
-  @IsUUID(undefined, { message: 'ID de usuário inválido.' })
+  @IsUUID(4, { message: 'ID de usuário inválido.' })
   id?: string;
 
   @IsOptional()

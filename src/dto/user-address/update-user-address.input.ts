@@ -2,7 +2,7 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-v
 
 export class UpdateUserAddressDTO {
   @IsOptional()
-  @IsUUID(undefined, { message: 'ID de usuário inválido.' })
+  @IsUUID(4, { message: 'ID de usuário inválido.' })
   id?: string;
 
   @IsOptional()

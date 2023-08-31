@@ -43,6 +43,10 @@ export class HardSkillService {
     });
   }
 
+  public async getAllHardSkills(): Promise<HardSkill[]> {
+    return this.$prisma.hardSkill.findMany();
+  }
+
   public async getManyHardSkillById(ids: Array<string>): Promise<HardSkillEntity[]> {
     const user = await this.$prisma.hardSkill.findMany({
       where: { id: { in: ids } },

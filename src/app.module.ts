@@ -7,8 +7,10 @@ import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/ap
 import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
 
 import { JwtStrategy } from './auth/auth.strategy';
+import { OrderByEnum } from './enums/order-by.enum';
 import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
+import { SortingOrderEnum } from './enums/sorting-order.enum';
 import { UserResolver } from './resolvers/user/user.resolver';
 import { IsCPFValidator } from './validators/is-cpf.validator';
 import { MentorService } from './services/mentor/mentor.service';
@@ -84,6 +86,16 @@ export class AppModule {
     registerEnumType(WeekdayType, {
       name: 'WeekdayType',
       description: 'These are the supported statuses for the days of the week.',
+    });
+
+    registerEnumType(SortingOrderEnum, {
+      name: 'SortingOrderEnum',
+      description: 'These are the supported statuses for sorting order.',
+    });
+
+    registerEnumType(OrderByEnum, {
+      name: 'OrderByEnum',
+      description: 'These are the supported statuses for order by.',
     });
   }
 }

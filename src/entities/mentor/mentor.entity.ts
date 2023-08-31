@@ -3,6 +3,7 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 import { EvaluationEntity } from '../evaluation/evaluation.entity';
 import { AvailabilityEntity } from '../availability/availability.entity';
+import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class MentorEntity {
@@ -33,9 +34,15 @@ export class MentorEntity {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
+  @Field(() => Date, { nullable: true })
+  deleted?: Date;
+
   @Field(() => [EvaluationEntity], { nullable: true })
   evaluation?: Array<EvaluationEntity>;
 
   @Field(() => [AvailabilityEntity], { nullable: true })
   availability?: Array<AvailabilityEntity>;
+
+  @Field(() => UserEntity, { nullable: true })
+  User?: any;
 }
