@@ -11,29 +11,31 @@ import { AppModule } from './app.module';
 
 declare const module: any;
 
-async function bootstrap() {
-  let app: any;
-
-  if (process.env.NODE_ENV === 'production') {
-    const sslPaths = {
-      privateKey: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'privkey.pem'),
-      certificate: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'cert.pem'),
-      ca: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'chain.pem'),
-    };
-
-    const [privateKey, cert, ca] = await Promise.all([
-      readFile(sslPaths.privateKey, 'utf8'),
-      readFile(sslPaths.certificate, 'utf8'),
-      readFile(sslPaths.ca, 'utf8'),
-    ]);
-
-    app = await NestFactory.create<NestFastifyApplication>(
-      AppModule,
-      new FastifyAdapter({ https: { key: privateKey, cert, ca } })
-    );
-  } else {
-    app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+async function makeApp() {
+  if (String(process.env.ENABLE_SSL).toLowerCase() !== 'true') {
+    return await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   }
+
+  const sslPaths = {
+    privateKey: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'privkey.pem'),
+    certificate: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'cert.pem'),
+    ca: resolve(__dirname, '..', 'ssl', 'certs', 'mentorei.app', 'chain.pem'),
+  };
+
+  const [privateKey, cert, ca] = await Promise.all([
+    readFile(sslPaths.privateKey, 'utf8'),
+    readFile(sslPaths.certificate, 'utf8'),
+    readFile(sslPaths.ca, 'utf8'),
+  ]);
+
+  return await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ https: { key: privateKey, cert, ca } })
+  );
+}
+
+async function bootstrap() {
+  const app = await makeApp();
 
   app.enableCors();
 
