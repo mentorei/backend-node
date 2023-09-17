@@ -9,29 +9,26 @@ import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserEntity } from 'src/entities/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user/user.service';
-import { SkillsEntity } from 'src/entities/user/skills.entity';
+import { SkillService } from 'src/services/skill/skill.service';
 import { MentorService } from 'src/services/mentor/mentor.service';
 import { MenteeService } from 'src/services/mentee/mentee.service';
 import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
 import { UpsertMentorInput } from 'src/dto/mentor/upsert-mentor.input';
 import { UpsertMenteeInput } from 'src/dto/mentee/upsert-mentee.input';
 import { UpdateUserEntity } from 'src/entities/user/update-user.entity';
-import { SoftSkillService } from 'src/services/soft-skill/soft-skill.service';
-import { HardSkillService } from 'src/services/hard-skill/hard-skill.service';
-import { UserAddressService } from 'src/services/user-address/user-address.service';
-import { UserCompanyService } from 'src/services/user-company/user-company.service';
-import { UpsertUserCompanyInput } from 'src/dto/user-company/upsert-user-company.input';
-import { UpsertUserAddressInput } from 'src/dto/user-address/upsert-user-address.input';
+import { UserAddressService } from 'src/services/user/user-address.service';
+import { UserCompanyService } from 'src/services/user/user-company.service';
+import { UpsertUserAddressInput } from 'src/dto/user/user-address/upsert-user-address.input';
+import { UpsertUserCompanyInput } from 'src/dto/user/user-company/upsert-user-company.input';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private $user: UserService,
     private $auth: AuthService,
+    private $skill: SkillService,
     private $mentor: MentorService,
     private $mentee: MenteeService,
-    private $softSkill: SoftSkillService,
-    private $hardSkill: HardSkillService,
     private $userAddress: UserAddressService,
     private $userCompany: UserCompanyService
   ) {}
@@ -89,6 +86,7 @@ export class UserResolver {
     @Args('id', { type: () => String }) id: string,
     @Args('gender', { type: () => GenderType, nullable: true }) gender?: GenderType,
     @Args('document', { type: () => String, nullable: true }) document?: string,
+    @Args('avatar', { type: () => String, nullable: true }) avatar?: string,
     @Args('phoneNumber', { type: () => String, nullable: true }) phoneNumber?: string,
     @Args('birthDate', { type: () => String, nullable: true }) birthDate?: string,
     @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
@@ -96,13 +94,13 @@ export class UserResolver {
     @Args('company', { type: () => UpsertUserCompanyInput, nullable: true }) company?: any,
     @Args('mentor', { type: () => UpsertMentorInput, nullable: true }) mentor?: any,
     @Args('mentee', { type: () => UpsertMenteeInput, nullable: true }) mentee?: any,
-    @Args('softSkills', { type: () => [String], nullable: true }) softSkills?: Array<string>,
-    @Args('hardSkills', { type: () => [String], nullable: true }) hardSkills?: Array<string>
+    @Args('skills', { type: () => [String], nullable: true }) skills?: Array<string>
   ): Promise<User> {
     const userInput = new UserInput();
     userInput.id = id;
     userInput.gender = gender;
     userInput.document = document;
+    userInput.avatar = avatar;
     userInput.phoneNumber = phoneNumber;
     userInput.birthDate = birthDate;
     userInput.maritalStatus = maritalStatus;
@@ -127,14 +125,9 @@ export class UserResolver {
       userInput.menteeId = dataMentee.id;
     }
 
-    if (softSkills && softSkills.length > 0) {
-      const softs = await this.$softSkill.getManySoftSkillById(softSkills);
-      userInput.softSkills = softs;
-    }
-
-    if (hardSkills && hardSkills.length > 0) {
-      const hards = await this.$hardSkill.getManyHardSkillById(hardSkills);
-      userInput.hardSkills = hards;
+    if (skills && skills.length > 0) {
+      const dataSkills = await this.$skill.getManySkillById(skills);
+      userInput.skills = dataSkills;
     }
 
     const updateUser = await this.$user.updateUser(userInput);
@@ -152,16 +145,5 @@ export class UserResolver {
   @Query(() => UserEntity, { name: 'getUserById' })
   public getUserById(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.$user.getUserById(id);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Query(() => SkillsEntity, { name: 'listSkills' })
-  public async listSkills(): Promise<SkillsEntity> {
-    const skills = new SkillsEntity();
-
-    skills.hardSkills = await this.$hardSkill.getAllHardSkills();
-    skills.softSkills = await this.$softSkill.getAllSoftSkills();
-
-    return skills;
   }
 }

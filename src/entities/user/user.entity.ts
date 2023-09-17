@@ -1,12 +1,11 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { GenderType, MaritalType, Prisma } from '@prisma/client';
 
+import { SkillEntity } from '../skill/skill.entity';
 import { MenteeEntity } from '../mentee/mentee.entity';
 import { MentorEntity } from '../mentor/mentor.entity';
-import { SoftSkillEntity } from '../soft-skill/soft-skill.entity';
-import { HardSkillEntity } from '../hard-skill/hard-skill.entity';
-import { UserCompanyEntity } from '../user-company/user-company.entity';
-import { UserAddressEntity } from '../user-address/user-address.entity';
+import { UserCompanyEntity } from './user-company/user-company.entity';
+import { UserAddressEntity } from './user-address/user-address.entity';
 
 @ObjectType()
 export class UserEntity {
@@ -27,6 +26,9 @@ export class UserEntity {
 
   @Field(() => String, { nullable: true })
   document?: string;
+
+  @Field(() => String, { nullable: true })
+  avatar?: string;
 
   @Field(() => String, { nullable: true })
   phoneNumber?: string;
@@ -52,15 +54,12 @@ export class UserEntity {
   @Field(() => UserAddressEntity, { nullable: true })
   address?: UserAddressEntity;
 
-  @Field(() => [HardSkillEntity], { nullable: true })
-  hardSkills?: Prisma.HardSkillUncheckedCreateNestedManyWithoutUsersInput;
-
-  @Field(() => [SoftSkillEntity], { nullable: true })
-  softSkills?: Prisma.SoftSkillUncheckedCreateNestedManyWithoutUsersInput;
+  @Field(() => [SkillEntity], { nullable: true })
+  skills?: Prisma.SkillUncheckedCreateNestedManyWithoutUsersInput;
 
   @Field(() => MenteeEntity, { nullable: true })
-  Mentee?: MenteeEntity;
+  mentee?: MenteeEntity;
 
   @Field(() => MentorEntity, { nullable: true })
-  Mentor?: MentorEntity;
+  mentor?: MentorEntity;
 }

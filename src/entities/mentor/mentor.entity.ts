@@ -1,9 +1,10 @@
 import { DegreeType } from '@prisma/client';
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 
-import { EvaluationEntity } from '../evaluation/evaluation.entity';
-import { AvailabilityEntity } from '../availability/availability.entity';
 import { UserEntity } from '../user/user.entity';
+import { ConnectionEntity } from '../connection/connection.entity';
+import { MentorEvaluationEntity } from './mentor-evaluation/mentor-evaluation.entity';
+import { MentorAvailabilityEntity } from './mentor-availability/mentor-availability.entity';
 
 @ObjectType()
 export class MentorEntity {
@@ -37,12 +38,21 @@ export class MentorEntity {
   @Field(() => Date, { nullable: true })
   deleted?: Date;
 
-  @Field(() => [EvaluationEntity], { nullable: true })
-  evaluation?: Array<EvaluationEntity>;
+  @Field(() => Int, { nullable: true })
+  totalAvaliations?: number;
 
-  @Field(() => [AvailabilityEntity], { nullable: true })
-  availability?: Array<AvailabilityEntity>;
+  @Field(() => Float, { nullable: true })
+  averageRating?: number | string;
+
+  @Field(() => [MentorEvaluationEntity], { nullable: true })
+  evaluations?: Array<MentorEvaluationEntity>;
+
+  @Field(() => [MentorAvailabilityEntity], { nullable: true })
+  availabilities?: Array<MentorAvailabilityEntity>;
+
+  @Field(() => [ConnectionEntity], { nullable: true })
+  connections?: Array<ConnectionEntity>;
 
   @Field(() => UserEntity, { nullable: true })
-  User?: any;
+  user?: any;
 }

@@ -1,12 +1,11 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
 import { Prisma, GenderType, MaritalType } from '@prisma/client';
 
-import { HardSkillInput } from '../hard-skill/hard-skill.input';
-import { SoftSkillInput } from '../soft-skill/soft-skill.input';
-import { UserCompanyInput } from '../user-company/user-company.input';
-import { UserAddressInput } from '../user-address/user-address.input';
+import { SkillInput } from '../skill/skill.input';
 import { MentorInput } from '../mentor/mentor.input';
 import { MenteeInput } from '../mentee/mentee.input';
+import { UserCompanyInput } from './user-company/user-company.input';
+import { UserAddressInput } from './user-address/user-address.input';
 
 @InputType()
 export class UserInput implements Prisma.UserUncheckedCreateInput {
@@ -30,6 +29,9 @@ export class UserInput implements Prisma.UserUncheckedCreateInput {
 
   @Field(() => String, { nullable: true })
   document?: string;
+
+  @Field(() => String, { nullable: true })
+  avatar?: string;
 
   @Field(() => String, { nullable: true })
   phoneNumber?: string;
@@ -73,9 +75,6 @@ export class UserInput implements Prisma.UserUncheckedCreateInput {
   @Field(() => String, { nullable: true })
   menteeId?: string;
 
-  @Field(() => [HardSkillInput], { nullable: true })
-  hardSkills?: any;
-
-  @Field(() => [SoftSkillInput], { nullable: true })
-  softSkills?: any;
+  @Field(() => [SkillInput], { nullable: true })
+  skills?: any;
 }

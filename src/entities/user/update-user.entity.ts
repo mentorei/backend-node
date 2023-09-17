@@ -1,8 +1,8 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { GenderType, MaritalType } from '@prisma/client';
 
-import { UserAddressEntity } from '../user-address/user-address.entity';
-import { UserCompanyEntity } from '../user-company/user-company.entity';
+import { UserCompanyEntity } from './user-company/user-company.entity';
+import { UserAddressEntity } from './user-address/user-address.entity';
 
 @ObjectType()
 export class UpdateUserEntity {
@@ -14,6 +14,9 @@ export class UpdateUserEntity {
 
   @Field(() => String, { nullable: true })
   document?: string;
+
+  @Field(() => String, { nullable: true })
+  avatar?: string;
 
   @Field(() => String, { nullable: true })
   phoneNumber?: string;
@@ -31,8 +34,5 @@ export class UpdateUserEntity {
   address?: UserAddressEntity;
 
   @Field(() => [String], { nullable: true })
-  hardSkills?: Array<string>;
-
-  @Field(() => [String], { nullable: true })
-  softSkills?: Array<string>;
+  skills?: Array<string>;
 }

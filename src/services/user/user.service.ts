@@ -54,10 +54,19 @@ export class UserService {
       include: {
         address: true,
         company: true,
-        softSkills: true,
-        hardSkills: true,
-        Mentee: true,
-        Mentor: true,
+        skills: true,
+        mentee: {
+          include: {
+            connections: true,
+          },
+        },
+        mentor: {
+          include: {
+            connections: true,
+            availabilities: true,
+            evaluations: true,
+          },
+        },
       },
     });
 
@@ -85,6 +94,7 @@ export class UserService {
     dto.id = user.id;
     dto.gender = user.gender;
     dto.document = user.document;
+    dto.avatar = user.avatar;
     dto.phoneNumber = user.phoneNumber;
     dto.birthDate = user.birthDate;
     dto.maritalStatus = user.maritalStatus;
@@ -92,8 +102,7 @@ export class UserService {
     dto.address = user.address;
     dto.mentee = user.mentee;
     dto.mentor = user.mentor;
-    dto.hardSkills = user.hardSkills;
-    dto.softSkills = user.softSkills;
+    dto.skills = user.skills;
 
     const errors = await validate(dto);
 
@@ -119,8 +128,7 @@ export class UserService {
         addressId: user.addressId,
         menteeId: user.menteeId,
         mentorId: user.mentorId,
-        softSkills: user.softSkills ? { connect: user.softSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
-        hardSkills: user.hardSkills ? { connect: user.hardSkills.map((skill: any) => ({ id: skill.id })) } : undefined,
+        skills: user.skills ? { connect: user.skills.map((skill: any) => ({ id: skill.id })) } : undefined,
       },
     });
   }

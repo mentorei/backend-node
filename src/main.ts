@@ -11,7 +11,7 @@ import { AppModule } from './app.module';
 
 declare const module: any;
 
-async function makeApp() {
+async function makeApp(): Promise<any> {
   if (String(process.env.ENABLE_SSL).toLowerCase() !== 'true') {
     return await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   }
