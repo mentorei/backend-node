@@ -32,15 +32,14 @@ export class MentorService {
       take: pagination?.take || 100,
       where,
       include: {
-        availability: true,
-        evaluation: true,
-        connection: true,
-        User: {
+        availabilities: true,
+        evaluations: true,
+        connections: true,
+        user: {
           include: {
             company: true,
             address: true,
-            softSkills: true,
-            hardSkills: true,
+            skills: true,
           },
         },
       },
@@ -52,15 +51,14 @@ export class MentorService {
     const mentor = await this.$prisma.mentor.findUnique({
       where: { id, deleted: null },
       include: {
-        availability: true,
-        evaluation: true,
-        connection: true,
-        User: {
+        availabilities: true,
+        evaluations: true,
+        connections: true,
+        user: {
           include: {
             company: true,
             address: true,
-            softSkills: true,
-            hardSkills: true,
+            skills: true,
           },
         },
       },
@@ -100,7 +98,7 @@ export class MentorService {
     };
 
     return this.$prisma.mentor.upsert({
-      where: { id: mentor.id || '' },
+      where: { id: mentor.id },
       create: data,
       update: data,
     });
@@ -134,7 +132,7 @@ export class MentorService {
       };
     }
     if (filters?.name) {
-      where.User = {
+      where.user = {
         name: {
           contains: filters.name,
           mode: 'insensitive',
@@ -142,20 +140,11 @@ export class MentorService {
         deleted: null,
       };
     }
-    if (filters?.softSkillId) {
-      where.User = {
-        softSkills: {
+    if (filters?.skillId) {
+      where.user = {
+        skills: {
           some: {
-            id: filters.softSkillId,
-          },
-        },
-      };
-    }
-    if (filters?.hardSkillId) {
-      where.User = {
-        hardSkills: {
-          some: {
-            id: filters.hardSkillId,
+            id: filters.skillId,
           },
         },
       };
@@ -172,7 +161,7 @@ export class MentorService {
     if (pagination?.orderBy) {
       if (pagination.orderBy === 'userName') {
         orderBy = {
-          User: { name: pagination?.sortingOrder || 'desc' },
+          user: { name: pagination?.sortingOrder || 'desc' },
         };
       } else {
         orderBy = {

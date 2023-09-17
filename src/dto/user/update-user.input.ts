@@ -4,8 +4,8 @@ import { IsArray, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, IsUUID, Va
 
 import { UpdateMentorDTO } from '../mentor/update-mentor.input';
 import { UpdateMenteeDTO } from '../mentee/update-mentee.input';
-import { UpdateUserCompanyDTO } from '../user-company/update-user-company.input';
-import { UpdateUserAddressDTO } from '../user-address/update-user-address.input';
+import { UpdateUserCompanyDTO } from './user-company/update-user-company.input';
+import { UpdateUserAddressDTO } from './user-address/update-user-address.input';
 
 export class UpdateUserDTO {
   @IsUUID(4, { message: 'ID de usuário inválido.' })
@@ -64,10 +64,6 @@ export class UpdateUserDTO {
   mentee?: any;
 
   @IsOptional()
-  @IsArray({ message: 'A soft skill deve ser uma string válida.' })
-  softSkills?: Array<string>;
-
-  @IsOptional()
-  @IsArray({ message: 'A hard skill deve ser uma string válida.' })
-  hardSkills?: Array<string>;
+  @IsArray({ message: 'A habilidade deve ser uma string válida.' })
+  skills?: Array<string>;
 }

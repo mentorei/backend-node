@@ -12,8 +12,5 @@ export class FilterMentorInput {
   endDate?: Date;
 
   @Field(() => String, { nullable: true })
-  softSkillId?: string;
-
-  @Field(() => String, { nullable: true })
-  hardSkillId?: string;
+  skillId?: string;
 }

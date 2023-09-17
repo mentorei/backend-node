@@ -3,8 +3,8 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 import { UserEntity } from '../user/user.entity';
 import { ConnectionEntity } from '../connection/connection.entity';
-import { EvaluationEntity } from '../evaluation/evaluation.entity';
-import { AvailabilityEntity } from '../availability/availability.entity';
+import { MentorEvaluationEntity } from './mentor-evaluation/mentor-evaluation.entity';
+import { MentorAvailabilityEntity } from './mentor-availability/mentor-availability.entity';
 
 @ObjectType()
 export class MentorEntity {
@@ -38,15 +38,15 @@ export class MentorEntity {
   @Field(() => Date, { nullable: true })
   deleted?: Date;
 
-  @Field(() => [EvaluationEntity], { nullable: true })
-  evaluation?: Array<EvaluationEntity>;
+  @Field(() => [MentorEvaluationEntity], { nullable: true })
+  evaluations?: Array<MentorEvaluationEntity>;
 
-  @Field(() => [AvailabilityEntity], { nullable: true })
-  availability?: Array<AvailabilityEntity>;
+  @Field(() => [MentorAvailabilityEntity], { nullable: true })
+  availabilities?: Array<MentorAvailabilityEntity>;
 
   @Field(() => [ConnectionEntity], { nullable: true })
-  connection?: Array<ConnectionEntity>;
+  connections?: Array<ConnectionEntity>;
 
   @Field(() => UserEntity, { nullable: true })
-  User?: any;
+  user?: any;
 }

@@ -3,7 +3,8 @@ import { ConnectionStatusType, Prisma } from '@prisma/client';
 
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
-import { AvailabilityEntity } from 'src/entities/availability/availability.entity';
+import { MentorAvailabilityEntity } from 'src/entities/mentor/mentor-availability/mentor-availability.entity';
+import { SkillEntity } from 'src/entities/skill/skill.entity';
 
 @InputType()
 export class ConnectionInput implements Prisma.ConnectionUncheckedCreateInput {
@@ -29,10 +30,16 @@ export class ConnectionInput implements Prisma.ConnectionUncheckedCreateInput {
   deleted?: Date;
 
   @Field(() => String)
+  skillId: string;
+
+  @Field(() => SkillEntity, { nullable: true })
+  skill?: SkillEntity;
+
+  @Field(() => String)
   mentorAvailabilityId: string;
 
-  @Field(() => AvailabilityEntity, { nullable: true })
-  availability?: AvailabilityEntity;
+  @Field(() => MentorAvailabilityEntity, { nullable: true })
+  mentorAvailability?: MentorAvailabilityEntity;
 
   @Field(() => String)
   mentorId: string;

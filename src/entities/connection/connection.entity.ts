@@ -3,7 +3,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
-import { AvailabilityEntity } from '../availability/availability.entity';
+import { MentorAvailabilityEntity } from '../mentor/mentor-availability/mentor-availability.entity';
 
 @ObjectType()
 export class ConnectionEntity {
@@ -31,8 +31,8 @@ export class ConnectionEntity {
   @Field(() => String)
   mentorAvailabilityId: string;
 
-  @Field(() => AvailabilityEntity, { nullable: true })
-  availability?: AvailabilityEntity;
+  @Field(() => MentorAvailabilityEntity, { nullable: true })
+  availability?: MentorAvailabilityEntity;
 
   @Field(() => String)
   mentorId: string;

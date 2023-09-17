@@ -2,9 +2,9 @@ import { Prisma, DegreeType } from '@prisma/client';
 import { InputType, Field, ID, Int } from '@nestjs/graphql';
 
 import { UserInput } from '../user/user.input';
-import { EvaluationInput } from '../evaluation/evaluation.input';
 import { ConnectionInput } from '../connection/connection.input';
-import { AvailabilityInput } from '../availability/availability.input';
+import { MentorEvaluationInput } from './mentor-evaluation/mentor-evaluation.input';
+import { MentorAvailabilityInput } from './mentor-availability/mentor-availability.input';
 
 @InputType()
 export class MentorInput implements Prisma.MentorUncheckedCreateInput {
@@ -39,14 +39,14 @@ export class MentorInput implements Prisma.MentorUncheckedCreateInput {
   deleted?: Date;
 
   @Field(() => UserInput, { nullable: true })
-  User?: Prisma.UserUncheckedCreateNestedOneWithoutMentorInput;
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutMentorInput;
 
-  @Field(() => [EvaluationInput], { nullable: true })
-  evaluation?: Prisma.EvaluationUncheckedCreateNestedManyWithoutMentorInput;
+  @Field(() => [MentorEvaluationInput], { nullable: true })
+  evaluations?: Prisma.MentorEvaluationUncheckedCreateNestedManyWithoutMentorInput;
 
-  @Field(() => [AvailabilityInput], { nullable: true })
-  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutMentorInput;
+  @Field(() => [MentorAvailabilityInput], { nullable: true })
+  availabilities?: Prisma.MentorAvailabilityUncheckedCreateNestedManyWithoutMentorInput;
 
   @Field(() => [ConnectionInput], { nullable: true })
-  connection?: Prisma.ConnectionUncheckedCreateNestedManyWithoutMentorInput;
+  connections?: Prisma.ConnectionUncheckedCreateNestedManyWithoutMentorInput;
 }

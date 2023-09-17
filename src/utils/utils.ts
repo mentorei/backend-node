@@ -60,3 +60,17 @@ export const shortenName = (fullName: string): string => {
 
   return shortenedName;
 };
+
+export function getTranslatedDays(weekDay: string): string {
+  const days: any = {
+    sunday: 'domingo',
+    monday: 'segunda-feira',
+    tuesday: 'terça-feira',
+    wednesday: 'quarta-feira',
+    thursday: 'quinta-feira',
+    friday: 'sexta-feira',
+    saturday: 'sábado',
+  };
+
+  return days[weekDay];
+}

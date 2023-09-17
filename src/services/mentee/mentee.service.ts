@@ -23,13 +23,12 @@ export class MenteeService {
     return this.$prisma.mentee.findMany({
       where: { deleted: null },
       include: {
-        connection: true,
-        User: {
+        connections: true,
+        user: {
           include: {
             company: true,
             address: true,
-            softSkills: true,
-            hardSkills: true,
+            skills: true,
           },
         },
       },
@@ -40,13 +39,12 @@ export class MenteeService {
     const mentee = await this.$prisma.mentee.findUnique({
       where: { id, deleted: null },
       include: {
-        connection: true,
-        User: {
+        connections: true,
+        user: {
           include: {
             company: true,
             address: true,
-            softSkills: true,
-            hardSkills: true,
+            skills: true,
           },
         },
       },
@@ -60,7 +58,7 @@ export class MenteeService {
   }
 
   public async updateMentee(mentee: MenteeInput): Promise<Mentee> {
-    this.getMenteeById(mentee.id);
+    await this.getMenteeById(mentee.id);
 
     return this.$prisma.mentee.update({
       where: { id: mentee.id },
@@ -82,7 +80,7 @@ export class MenteeService {
     };
 
     return this.$prisma.mentee.upsert({
-      where: { id: mentor.id || '' },
+      where: { id: mentor.id },
       create: data,
       update: data,
     });

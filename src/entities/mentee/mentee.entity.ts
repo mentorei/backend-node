@@ -31,8 +31,8 @@ export class MenteeEntity {
   deleted?: Date;
 
   @Field(() => [ConnectionEntity], { nullable: true })
-  connection?: Array<ConnectionEntity>;
+  connections?: Array<ConnectionEntity>;
 
   @Field(() => UserEntity, { nullable: true })
-  User?: any;
+  user?: any;
 }

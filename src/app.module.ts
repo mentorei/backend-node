@@ -1,10 +1,12 @@
 import {
+  SkillType,
   LevelType,
   DegreeType,
   GenderType,
   MaritalType,
   WeekdayType,
   PrismaClient,
+  NotificationType,
   ConnectionStatusType,
 } from '@prisma/client';
 import { Module } from '@nestjs/common';
@@ -20,39 +22,51 @@ import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
 import { SortingOrderEnum } from './enums/sorting-order.enum';
 import { UserResolver } from './resolvers/user/user.resolver';
+import { SkillService } from './services/skill/skill.service';
 import { IsCPFValidator } from './validators/is-cpf.validator';
 import { MentorService } from './services/mentor/mentor.service';
+import { SkillResolver } from './resolvers/skill/skill.resolver';
 import { MenteeService } from './services/mentee/mentee.service';
 import { MentorResolver } from './resolvers/mentor/mentor.resolver';
 import { MenteeResolver } from './resolvers/mentee/mentee.resolver';
+import { GoogleMeetService } from './services/google/google-meet.service';
+import { UserCompanyService } from './services/user/user-company.service';
+import { UserAddressService } from './services/user/user-address.service';
 import { UniqueUserCPFValidator } from './validators/unique-cpf.validator';
-import { HardSkillService } from './services/hard-skill/hard-skill.service';
-import { SoftSkillService } from './services/soft-skill/soft-skill.service';
-import { HardSkillResolver } from './resolvers/hard-skill/hard-skill.resolver';
+import { ConnectionService } from './services/connection/connection.service';
 import { UniqueUserEmailValidator } from './validators/unique-email.validator';
-import { SoftSkillResolver } from './resolvers/soft-skill/soft-skill.resolver';
 import { ConnectionResolver } from './resolvers/connection/connection.resolver';
-import { UserCompanyService } from './services/user-company/user-company.service';
-import { UserAddressService } from './services/user-address/user-address.service';
+import { NotificationService } from './services/notification/notification.service';
+import { MentorEvaluationService } from './services/mentor/mentor-evaluation.service';
+import { NotificationResolver } from './resolvers/notification/notification.resolver';
+import { MentorEvaluationResolver } from './resolvers/mentor/mentor-evaluation.resolver';
+import { MentorAvailabilityService } from './services/mentor/mentor-availability.service';
+import { MentorAvailabilityResolver } from './resolvers/mentor/mentor-availability.resolver';
 
 const RESOLVERS = [
   UserResolver,
+  SkillResolver,
   MentorResolver,
   MenteeResolver,
-  HardSkillResolver,
-  SoftSkillResolver,
   ConnectionResolver,
+  NotificationResolver,
+  MentorEvaluationResolver,
+  MentorAvailabilityResolver,
 ];
 
 const SERVICES = [
   AuthService,
   UserService,
+  SkillService,
   MentorService,
   MenteeService,
-  SoftSkillService,
-  HardSkillService,
+  GoogleMeetService,
+  ConnectionService,
   UserAddressService,
   UserCompanyService,
+  NotificationService,
+  MentorEvaluationService,
+  MentorAvailabilityService,
 ];
 
 const VALIDATORS = [IsCPFValidator, UniqueUserEmailValidator, UniqueUserCPFValidator];
@@ -117,6 +131,16 @@ export class AppModule {
     registerEnumType(ConnectionStatusType, {
       name: 'ConnectionStatusType',
       description: 'Connection status to have more control over mentees and mentors.',
+    });
+
+    registerEnumType(NotificationType, {
+      name: 'NotificationType',
+      description: 'Type of notification for the app to carry out different actions.',
+    });
+
+    registerEnumType(SkillType, {
+      name: 'SkillType',
+      description: 'To differentiate skills between soft and hard.',
     });
   }
 }

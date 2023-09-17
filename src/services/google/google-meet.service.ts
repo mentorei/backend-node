@@ -2,7 +2,7 @@ import { JWT } from 'google-auth-library';
 import { Injectable } from '@nestjs/common';
 import { calendar_v3, google } from 'googleapis';
 
-import credentials from '../../resources/credentials.json';
+import { getTranslatedDays } from 'src/utils/utils';
 import { ConnectionInput } from 'src/dto/connection/connection.input';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class GoogleMeetService {
   constructor() {
     this.calendar = google.calendar('v3');
     this.authJwt = new JWT({
-      email: credentials.client_email,
-      key: credentials.private_key,
+      email: process.env.GOOGLE_EMAIL,
+      key: process.env.GOOGLE_PRIVATE_KEY,
       scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
     });
   }
@@ -22,14 +22,19 @@ export class GoogleMeetService {
   async createMeetingEvent(connection: ConnectionInput) {
     try {
       const event = {
-        summary: 'Reunião do Nest.js',
-        description: 'Esta é uma reunião de teste do Nest.js',
+        summary: `Reunião sobre ${connection.skill.name}`,
+        description: `Esta é uma reunião para tratar sobre ${connection.skill.name} ${
+          connection.mentorAvailability.weekday === 'SUNDAY' || connection.mentorAvailability.weekday === 'SATURDAY'
+            ? 'no próximo'
+            : 'na próxima'
+        } ${getTranslatedDays(connection.mentorAvailability.weekday.toLowerCase())}.`,
+        location: 'Virtual / Google Meet',
         start: {
-          dateTime: '2023-09-30T10:00:00',
+          dateTime: `2023-09-30T${connection.mentorAvailability.openingTime}:00`,
           timeZone: 'America/Sao_Paulo',
         },
         end: {
-          dateTime: '2023-09-30T11:00:00',
+          dateTime: `2023-09-30T${connection.mentorAvailability.closingTime}:00`,
           timeZone: 'America/Sao_Paulo',
         },
         conferenceData: {
@@ -53,7 +58,7 @@ export class GoogleMeetService {
         auth: this.authJwt,
       });
 
-      return response.data.hangoutLink;
+      return response.data.htmlLink;
     } catch (error) {
       console.error('Erro ao criar a reunião: ', error);
       throw error;

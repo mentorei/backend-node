@@ -1,21 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { Connection, PrismaClient } from '@prisma/client';
+import { Connection, ConnectionStatusType, PrismaClient } from '@prisma/client';
 
 import { GoogleMeetService } from '../google/google-meet.service';
 import { ConnectionInput } from 'src/dto/connection/connection.input';
 
 @Injectable()
 export class ConnectionService {
-  constructor(private readonly $prisma: PrismaClient, private readonly $googleMeet: GoogleMeetService) {}
+  constructor(private readonly $prisma: PrismaClient, private $googleMeet: GoogleMeetService) {}
 
-  public async createConnection(connection: ConnectionInput): Promise<Connection> {
+  public async createConnection(connection: ConnectionInput): Promise<ConnectionInput> {
     return this.$prisma.connection.create({
       data: {
         status: 'CREATED',
+        skillId: connection.skillId,
         requestDescription: connection.requestDescription,
         menteeId: connection.menteeId,
         mentorId: connection.mentorId,
         mentorAvailabilityId: connection.mentorAvailabilityId,
+      },
+      include: {
+        mentor: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -26,31 +34,34 @@ export class ConnectionService {
       include: {
         mentee: {
           include: {
-            User: {
+            user: {
               include: {
                 company: true,
                 address: true,
-                softSkills: true,
-                hardSkills: true,
+                skills: true,
               },
             },
           },
         },
         mentor: {
           include: {
-            availability: true,
-            evaluation: true,
-            User: {
+            availabilities: true,
+            evaluations: true,
+            user: {
               include: {
                 company: true,
                 address: true,
-                softSkills: true,
-                hardSkills: true,
+                skills: true,
               },
             },
           },
         },
       },
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+      ],
     });
   }
 
@@ -58,28 +69,28 @@ export class ConnectionService {
     const connection = await this.$prisma.connection.findUnique({
       where: { id, deleted: null },
       include: {
+        skill: true,
+        mentorAvailability: true,
         mentee: {
           include: {
-            User: {
+            user: {
               include: {
                 company: true,
                 address: true,
-                softSkills: true,
-                hardSkills: true,
+                skills: true,
               },
             },
           },
         },
         mentor: {
           include: {
-            availability: true,
-            evaluation: true,
-            User: {
+            availabilities: true,
+            evaluations: true,
+            user: {
               include: {
                 company: true,
                 address: true,
-                softSkills: true,
-                hardSkills: true,
+                skills: true,
               },
             },
           },
@@ -94,7 +105,7 @@ export class ConnectionService {
     return connection;
   }
 
-  public async acceptConnection(id: string): Promise<Connection> {
+  public async acceptConnection(id: string): Promise<ConnectionInput> {
     const connection = await this.getConnectionById(id);
 
     const meetUrl = await this.$googleMeet.createMeetingEvent(connection);
@@ -105,39 +116,43 @@ export class ConnectionService {
         status: 'IN_PROGRESS',
         meetUrl,
       },
-    });
-  }
-
-  public async pauseConnection(id: string): Promise<Connection> {
-    this.getConnectionById(id);
-
-    return this.$prisma.connection.update({
-      where: { id },
-      data: {
-        status: 'PAUSED',
+      include: {
+        mentee: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
 
-  public async declineConnection(id: string): Promise<Connection> {
-    this.getConnectionById(id);
+  public async updateConnection(id: string, status: ConnectionStatusType): Promise<ConnectionInput> {
+    await this.getConnectionById(id);
 
     return this.$prisma.connection.update({
       where: { id },
       data: {
-        status: 'DECLINED',
+        status,
+      },
+      include: {
+        mentee: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
 
-  public async finishConnection(id: string): Promise<Connection> {
-    this.getConnectionById(id);
-
-    return this.$prisma.connection.update({
-      where: { id },
-      data: {
-        status: 'FINISHED',
-      },
+  public async validateConnection(mentorId: string, menteeId: string): Promise<Connection> {
+    const connection = await this.$prisma.connection.findFirst({
+      where: { mentorId, menteeId, status: 'FINISHED', deleted: null },
     });
+
+    if (!connection) {
+      throw new Error('Seu mentor ainda não finalizou a conexão. Tente novamente mais tarde.');
+    }
+
+    return connection;
   }
 }
