@@ -56,8 +56,18 @@ export class UserService {
         company: true,
         softSkills: true,
         hardSkills: true,
-        Mentee: true,
-        Mentor: true,
+        Mentee: {
+          include: {
+            connection: true,
+          },
+        },
+        Mentor: {
+          include: {
+            connection: true,
+            availability: true,
+            evaluation: true,
+          },
+        },
       },
     });
 
@@ -85,6 +95,7 @@ export class UserService {
     dto.id = user.id;
     dto.gender = user.gender;
     dto.document = user.document;
+    dto.avatar = user.avatar;
     dto.phoneNumber = user.phoneNumber;
     dto.birthDate = user.birthDate;
     dto.maritalStatus = user.maritalStatus;

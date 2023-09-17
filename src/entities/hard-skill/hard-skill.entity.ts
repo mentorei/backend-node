@@ -17,6 +17,9 @@ export class HardSkillEntity {
   @Field(() => String, { nullable: true })
   description?: string;
 
+  @Field(() => String, { nullable: true })
+  imageUrl?: string;
+
   @Field(() => Date)
   createdAt: Date;
 

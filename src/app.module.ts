@@ -1,10 +1,18 @@
+import {
+  LevelType,
+  DegreeType,
+  GenderType,
+  MaritalType,
+  WeekdayType,
+  PrismaClient,
+  ConnectionStatusType,
+} from '@prisma/client';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
-import { DegreeType, GenderType, LevelType, MaritalType, PrismaClient, WeekdayType } from '@prisma/client';
 
 import { JwtStrategy } from './auth/auth.strategy';
 import { OrderByEnum } from './enums/order-by.enum';
@@ -23,10 +31,18 @@ import { SoftSkillService } from './services/soft-skill/soft-skill.service';
 import { HardSkillResolver } from './resolvers/hard-skill/hard-skill.resolver';
 import { UniqueUserEmailValidator } from './validators/unique-email.validator';
 import { SoftSkillResolver } from './resolvers/soft-skill/soft-skill.resolver';
+import { ConnectionResolver } from './resolvers/connection/connection.resolver';
 import { UserCompanyService } from './services/user-company/user-company.service';
 import { UserAddressService } from './services/user-address/user-address.service';
 
-const RESOLVERS = [UserResolver, MentorResolver, MenteeResolver, HardSkillResolver, SoftSkillResolver];
+const RESOLVERS = [
+  UserResolver,
+  MentorResolver,
+  MenteeResolver,
+  HardSkillResolver,
+  SoftSkillResolver,
+  ConnectionResolver,
+];
 
 const SERVICES = [
   AuthService,
@@ -96,6 +112,11 @@ export class AppModule {
     registerEnumType(OrderByEnum, {
       name: 'OrderByEnum',
       description: 'These are the supported statuses for order by.',
+    });
+
+    registerEnumType(ConnectionStatusType, {
+      name: 'ConnectionStatusType',
+      description: 'Connection status to have more control over mentees and mentors.',
     });
   }
 }

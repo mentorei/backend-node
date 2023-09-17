@@ -89,6 +89,7 @@ export class UserResolver {
     @Args('id', { type: () => String }) id: string,
     @Args('gender', { type: () => GenderType, nullable: true }) gender?: GenderType,
     @Args('document', { type: () => String, nullable: true }) document?: string,
+    @Args('avatar', { type: () => String, nullable: true }) avatar?: string,
     @Args('phoneNumber', { type: () => String, nullable: true }) phoneNumber?: string,
     @Args('birthDate', { type: () => String, nullable: true }) birthDate?: string,
     @Args('maritalStatus', { type: () => MaritalType, nullable: true }) maritalStatus?: MaritalType,
@@ -103,6 +104,7 @@ export class UserResolver {
     userInput.id = id;
     userInput.gender = gender;
     userInput.document = document;
+    userInput.avatar = avatar;
     userInput.phoneNumber = phoneNumber;
     userInput.birthDate = birthDate;
     userInput.maritalStatus = maritalStatus;

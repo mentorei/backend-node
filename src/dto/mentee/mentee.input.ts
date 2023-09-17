@@ -1,7 +1,8 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
 import { Prisma, DegreeType } from '@prisma/client';
+import { InputType, Field, ID } from '@nestjs/graphql';
 
 import { UserInput } from '../user/user.input';
+import { ConnectionInput } from '../connection/connection.input';
 
 @InputType()
 export class MenteeInput implements Prisma.MenteeUncheckedCreateInput {
@@ -31,4 +32,7 @@ export class MenteeInput implements Prisma.MenteeUncheckedCreateInput {
 
   @Field(() => UserInput, { nullable: true })
   User?: Prisma.UserUncheckedCreateNestedOneWithoutMentorInput;
+
+  @Field(() => [ConnectionInput], { nullable: true })
+  connection?: Prisma.ConnectionUncheckedCreateNestedManyWithoutMenteeInput;
 }

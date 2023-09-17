@@ -32,6 +32,9 @@ export class UserInput implements Prisma.UserUncheckedCreateInput {
   document?: string;
 
   @Field(() => String, { nullable: true })
+  avatar?: string;
+
+  @Field(() => String, { nullable: true })
   phoneNumber?: string;
 
   @Field(() => String, { nullable: true })

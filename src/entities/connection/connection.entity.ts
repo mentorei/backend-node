@@ -1,7 +1,9 @@
+import { ConnectionStatusType } from '@prisma/client';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
+import { AvailabilityEntity } from '../availability/availability.entity';
 
 @ObjectType()
 export class ConnectionEntity {
@@ -11,11 +13,26 @@ export class ConnectionEntity {
   @Field(() => String, { nullable: true })
   meetUrl: string;
 
+  @Field(() => String, { nullable: true })
+  requestDescription: string;
+
+  @Field(() => ConnectionStatusType)
+  status: ConnectionStatusType;
+
   @Field(() => Date)
   createdAt: Date;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  deleted?: Date;
+
+  @Field(() => String)
+  mentorAvailabilityId: string;
+
+  @Field(() => AvailabilityEntity, { nullable: true })
+  availability?: AvailabilityEntity;
 
   @Field(() => String)
   mentorId: string;

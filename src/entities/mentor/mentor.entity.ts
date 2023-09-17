@@ -1,9 +1,10 @@
 import { DegreeType } from '@prisma/client';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
+import { UserEntity } from '../user/user.entity';
+import { ConnectionEntity } from '../connection/connection.entity';
 import { EvaluationEntity } from '../evaluation/evaluation.entity';
 import { AvailabilityEntity } from '../availability/availability.entity';
-import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
 export class MentorEntity {
@@ -42,6 +43,9 @@ export class MentorEntity {
 
   @Field(() => [AvailabilityEntity], { nullable: true })
   availability?: Array<AvailabilityEntity>;
+
+  @Field(() => [ConnectionEntity], { nullable: true })
+  connection?: Array<ConnectionEntity>;
 
   @Field(() => UserEntity, { nullable: true })
   User?: any;

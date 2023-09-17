@@ -22,6 +22,11 @@ export class UpdateUserDTO {
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty({ message: 'O avatar deve ser uma string válida.' })
+  avatar?: string;
+
+  @IsOptional()
+  @IsString()
   @IsNotEmpty({ message: 'O celular deve ser uma string válida.' })
   phoneNumber?: string;
 

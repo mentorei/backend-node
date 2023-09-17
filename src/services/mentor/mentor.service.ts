@@ -34,7 +34,7 @@ export class MentorService {
       include: {
         availability: true,
         evaluation: true,
-        Connection: true,
+        connection: true,
         User: {
           include: {
             company: true,
@@ -49,15 +49,28 @@ export class MentorService {
   }
 
   public async getMentorById(id: string): Promise<Mentor> {
-    const user = await this.$prisma.mentor.findUnique({
+    const mentor = await this.$prisma.mentor.findUnique({
       where: { id, deleted: null },
+      include: {
+        availability: true,
+        evaluation: true,
+        connection: true,
+        User: {
+          include: {
+            company: true,
+            address: true,
+            softSkills: true,
+            hardSkills: true,
+          },
+        },
+      },
     });
 
-    if (!user) {
+    if (!mentor) {
       throw new Error('Não foi possível encontrar este mentor.');
     }
 
-    return user;
+    return mentor;
   }
 
   public async updateMentor(mentor: MentorInput): Promise<Mentor> {

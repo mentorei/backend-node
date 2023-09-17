@@ -3,6 +3,7 @@ import { InputType, Field, ID, Int } from '@nestjs/graphql';
 
 import { UserInput } from '../user/user.input';
 import { EvaluationInput } from '../evaluation/evaluation.input';
+import { ConnectionInput } from '../connection/connection.input';
 import { AvailabilityInput } from '../availability/availability.input';
 
 @InputType()
@@ -45,4 +46,7 @@ export class MentorInput implements Prisma.MentorUncheckedCreateInput {
 
   @Field(() => [AvailabilityInput], { nullable: true })
   availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutMentorInput;
+
+  @Field(() => [ConnectionInput], { nullable: true })
+  connection?: Prisma.ConnectionUncheckedCreateNestedManyWithoutMentorInput;
 }

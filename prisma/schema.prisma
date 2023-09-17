@@ -15,6 +15,7 @@ model User {
   password      String
   gender        GenderType?
   document      String?
+  avatar        String?
   phoneNumber   String?
   birthDate     String?
   maritalStatus MaritalType?
@@ -64,6 +65,7 @@ model HardSkill {
   name        String
   level       LevelType
   description String?
+  imageUrl    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deleted     DateTime?
@@ -75,6 +77,7 @@ model SoftSkill {
   name        String
   level       LevelType
   description String?
+  imageUrl    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deleted     DateTime?
@@ -89,20 +92,20 @@ model Mentor {
   degree       DegreeType?
   expertise    String?
   valuePerHour Int?
-  User         User?          @relation()
   evaluation   Evaluation[]   @relation()
   availability Availability[] @relation()
-  Connection   Connection?    @relation()
+  connection   Connection[]   @relation()
   createdAt    DateTime       @default(now())
   updatedAt    DateTime?      @updatedAt
   deleted      DateTime?
+  User         User?          @relation()
 }
 
 model Evaluation {
   id          String    @id @default(uuid())
   rating      Int
   description String?
-  mentorId    String    @unique
+  mentorId    String
   mentor      Mentor    @relation(fields: [mentorId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
@@ -110,40 +113,45 @@ model Evaluation {
 }
 
 model Availability {
-  id          String      @id @default(uuid())
+  id          String       @id @default(uuid())
   openingTime String
   closingTime String
   weekday     WeekdayType
-  mentorId    String      @unique
-  mentor      Mentor      @relation(fields: [mentorId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime?   @updatedAt
+  mentorId    String       @unique
+  mentor      Mentor       @relation(fields: [mentorId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @updatedAt
   deleted     DateTime?
+  Connection  Connection[]
 }
 
 model Mentee {
-  id           String      @id @default(uuid())
+  id           String       @id @default(uuid())
   linkedin     String?
   goal         String?
   interestArea String?
   degree       DegreeType?
-  User         User?       @relation()
-  Connection   Connection? @relation()
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime?   @updatedAt
+  User         User?        @relation()
+  connection   Connection[] @relation()
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime?    @updatedAt
   deleted      DateTime?
 }
 
 model Connection {
-  id        String    @id @default(uuid())
-  meetUrl   String?
-  mentorId  String    @unique
-  mentor    Mentor    @relation(fields: [mentorId], references: [id])
-  menteeId  String    @unique
-  mentee    Mentee    @relation(fields: [menteeId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deleted   DateTime?
+  id                   String               @id @default(uuid())
+  meetUrl              String?
+  requestDescription   String?
+  status               ConnectionStatusType
+  mentorAvailabilityId String
+  availability         Availability         @relation(fields: [mentorAvailabilityId], references: [id])
+  mentorId             String
+  mentor               Mentor               @relation(fields: [mentorId], references: [id])
+  menteeId             String
+  mentee               Mentee               @relation(fields: [menteeId], references: [id])
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime?            @updatedAt
+  deleted              DateTime?
 }
 
 enum GenderType {
@@ -187,4 +195,12 @@ enum WeekdayType {
   THURSDAY
   FRIDAY
   SATURDAY
+}
+
+enum ConnectionStatusType {
+  CREATED
+  DECLINED
+  IN_PROGRESS
+  PAUSED
+  FINISHED
 }

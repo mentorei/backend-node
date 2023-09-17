@@ -23,22 +23,40 @@ export class MenteeService {
     return this.$prisma.mentee.findMany({
       where: { deleted: null },
       include: {
-        Connection: true,
-        User: true,
+        connection: true,
+        User: {
+          include: {
+            company: true,
+            address: true,
+            softSkills: true,
+            hardSkills: true,
+          },
+        },
       },
     });
   }
 
   public async getMenteeById(id: string): Promise<Mentee> {
-    const user = await this.$prisma.mentee.findUnique({
+    const mentee = await this.$prisma.mentee.findUnique({
       where: { id, deleted: null },
+      include: {
+        connection: true,
+        User: {
+          include: {
+            company: true,
+            address: true,
+            softSkills: true,
+            hardSkills: true,
+          },
+        },
+      },
     });
 
-    if (!user) {
+    if (!mentee) {
       throw new Error('Não foi possível encontrar este mentorado.');
     }
 
-    return user;
+    return mentee;
   }
 
   public async updateMentee(mentee: MenteeInput): Promise<Mentee> {
