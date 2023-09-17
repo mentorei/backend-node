@@ -5,6 +5,7 @@ import { FilterMentorInput } from 'src/dto/mentor/filter-mentor.input';
 import { MentorInput } from 'src/dto/mentor/mentor.input';
 import { PaginationInput } from 'src/dto/user/pagination.input';
 import { UpsertMentorInput } from 'src/dto/mentor/upsert-mentor.input';
+import { calculateTotalAvaliationsAndRating } from 'src/utils/utils';
 
 @Injectable()
 export class MentorService {
@@ -27,7 +28,7 @@ export class MentorService {
     const where = this.getWhereInputs(filters);
     const orderBy = this.getOrderByInputs(pagination);
 
-    return this.$prisma.mentor.findMany({
+    const mentors = await this.$prisma.mentor.findMany({
       skip: pagination?.skip || 0,
       take: pagination?.take || 100,
       where,
@@ -45,6 +46,20 @@ export class MentorService {
       },
       orderBy,
     });
+
+    const mentorsWithRatings = await Promise.all(
+      mentors.map(async (mentor) => {
+        const { totalAvaliations, averageRating } = calculateTotalAvaliationsAndRating(mentor.evaluations || []);
+
+        return {
+          ...mentor,
+          totalAvaliations,
+          averageRating,
+        };
+      })
+    );
+
+    return mentorsWithRatings;
   }
 
   public async getMentorById(id: string): Promise<Mentor> {

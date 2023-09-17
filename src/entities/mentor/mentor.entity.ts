@@ -1,5 +1,5 @@
 import { DegreeType } from '@prisma/client';
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 
 import { UserEntity } from '../user/user.entity';
 import { ConnectionEntity } from '../connection/connection.entity';
@@ -37,6 +37,12 @@ export class MentorEntity {
 
   @Field(() => Date, { nullable: true })
   deleted?: Date;
+
+  @Field(() => Int, { nullable: true })
+  totalAvaliations?: number;
+
+  @Field(() => Float, { nullable: true })
+  averageRating?: number | string;
 
   @Field(() => [MentorEvaluationEntity], { nullable: true })
   evaluations?: Array<MentorEvaluationEntity>;

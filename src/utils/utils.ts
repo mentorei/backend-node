@@ -1,3 +1,5 @@
+import { MentorEvaluationInput } from 'src/dto/mentor/mentor-evaluation/mentor-evaluation.input';
+
 export const isNotEmpty = (object: any) => {
   return Object.keys(object).length > 0;
 };
@@ -73,4 +75,15 @@ export function getTranslatedDays(weekDay: string): string {
   };
 
   return days[weekDay];
+}
+
+export function calculateTotalAvaliationsAndRating(avaliations: Array<MentorEvaluationInput>): {
+  totalAvaliations: number;
+  averageRating: string;
+} {
+  const totalAvaliations = avaliations.length;
+  const sumRatings = avaliations.reduce((sum, avaliation) => sum + avaliation.rating, 0);
+  const averageRating = totalAvaliations ? (sumRatings / totalAvaliations).toFixed(2) : '0.0';
+
+  return { totalAvaliations, averageRating };
 }
