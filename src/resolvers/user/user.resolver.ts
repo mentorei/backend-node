@@ -75,6 +75,8 @@ export class UserResolver {
 
     const userAuth = new UserAuthEntity();
     userAuth.id = userLogin.id;
+    userAuth.name = userLogin.name;
+    userAuth.email = userLogin.email;
     userAuth.token = token;
 
     return userAuth;
