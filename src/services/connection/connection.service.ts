@@ -32,6 +32,8 @@ export class ConnectionService {
     return this.$prisma.connection.findMany({
       where: { deleted: null },
       include: {
+        mentorAvailability: true,
+        skill: true,
         mentee: {
           include: {
             user: {

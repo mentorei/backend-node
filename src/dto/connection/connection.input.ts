@@ -15,7 +15,7 @@ export class ConnectionInput implements Prisma.ConnectionUncheckedCreateInput {
   meetUrl?: string;
 
   @Field(() => String, { nullable: true })
-  requestDescription: string;
+  requestDescription?: string;
 
   @Field(() => ConnectionStatusType)
   status: ConnectionStatusType;

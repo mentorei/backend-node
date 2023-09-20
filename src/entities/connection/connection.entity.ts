@@ -4,6 +4,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 import { MenteeEntity } from 'src/entities/mentee/mentee.entity';
 import { MentorAvailabilityEntity } from '../mentor/mentor-availability/mentor-availability.entity';
+import { SkillEntity } from '../skill/skill.entity';
 
 @ObjectType()
 export class ConnectionEntity {
@@ -11,10 +12,10 @@ export class ConnectionEntity {
   id: string;
 
   @Field(() => String, { nullable: true })
-  meetUrl: string;
+  meetUrl?: string;
 
   @Field(() => String, { nullable: true })
-  requestDescription: string;
+  requestDescription?: string;
 
   @Field(() => ConnectionStatusType)
   status: ConnectionStatusType;
@@ -29,10 +30,16 @@ export class ConnectionEntity {
   deleted?: Date;
 
   @Field(() => String)
+  skillId: string;
+
+  @Field(() => SkillEntity, { nullable: true })
+  skill?: SkillEntity;
+
+  @Field(() => String)
   mentorAvailabilityId: string;
 
   @Field(() => MentorAvailabilityEntity, { nullable: true })
-  availability?: MentorAvailabilityEntity;
+  mentorAvailability?: MentorAvailabilityEntity;
 
   @Field(() => String)
   mentorId: string;
