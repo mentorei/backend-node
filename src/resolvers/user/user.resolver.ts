@@ -1,15 +1,15 @@
 import { UseGuards } from '@nestjs/common';
-import { GenderType, MaritalType, User } from '@prisma/client';
+import { GenderType, MaritalType, User, VerificationType } from '@prisma/client';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
-import { isNotEmpty } from 'src/utils/utils';
-import { SendEmail } from 'src/utils/sendEmails';
 import { UserInput } from 'src/dto/user/user.input';
 import { GqlAuthGuard } from 'src/auth/jwt-auth.guard';
+import { isNotEmpty, shortenName } from 'src/utils/utils';
 import { UserEntity } from 'src/entities/user/user.entity';
 import { AuthService } from 'src/services/auth/auth.service';
 import { UserService } from 'src/services/user/user.service';
 import { SkillService } from 'src/services/skill/skill.service';
+import { EmailService } from 'src/services/email/email.service';
 import { MentorService } from 'src/services/mentor/mentor.service';
 import { MenteeService } from 'src/services/mentee/mentee.service';
 import { UserAuthEntity } from 'src/entities/user/user-auth.entity';
@@ -18,17 +18,21 @@ import { UpsertMenteeInput } from 'src/dto/mentee/upsert-mentee.input';
 import { UpdateUserEntity } from 'src/entities/user/update-user.entity';
 import { UserAddressService } from 'src/services/user/user-address.service';
 import { UserCompanyService } from 'src/services/user/user-company.service';
+import { VerificationService } from 'src/services/verification/verification.service';
 import { UpsertUserAddressInput } from 'src/dto/user/user-address/upsert-user-address.input';
 import { UpsertUserCompanyInput } from 'src/dto/user/user-company/upsert-user-company.input';
+import { VerificationEntity } from 'src/entities/verification/verification.entity';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private $user: UserService,
     private $auth: AuthService,
+    private $email: EmailService,
     private $skill: SkillService,
     private $mentor: MentorService,
     private $mentee: MenteeService,
+    private $verification: VerificationService,
     private $userAddress: UserAddressService,
     private $userCompany: UserCompanyService
   ) {}
@@ -56,7 +60,17 @@ export class UserResolver {
     userAuth.id = userCreated.id;
     userAuth.token = token;
 
-    SendEmail(user.name, user.email);
+    this.$email
+      .setTo(user.email)
+      .setSubject('Seja bem-vindo(a) ao Mentorei!')
+      .setHtml({
+        type: 'WELCOME',
+        template: 'welcome.html',
+        metadata: {
+          name: shortenName(user.name),
+        },
+      })
+      .sendMail();
 
     return userAuth;
   }
@@ -141,6 +155,49 @@ export class UserResolver {
   @Mutation(() => UserEntity, { name: 'deleteUser' })
   public deleteUser(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.$user.deleteUser(id);
+  }
+
+  @Mutation(() => VerificationEntity, { name: 'passwordReset' })
+  public async passwordReset(@Args('email', { type: () => String }) email: string): Promise<VerificationEntity> {
+    const user = await this.$user.getUserByEmail(email);
+
+    const verification = await this.$verification.passwordReset(user);
+
+    this.$email
+      .setTo(email)
+      .setSubject('Recuperação de senha')
+      .setHtml({
+        type: 'PASSWORD-RESET',
+        template: 'password-reset.html',
+        metadata: {
+          name: shortenName(verification.user.name),
+          code: verification.code,
+        },
+      })
+      .sendMail();
+
+    return verification;
+  }
+
+  @Mutation(() => VerificationEntity, { name: 'validateVerificationCode' })
+  public async validateVerificationCode(
+    @Args('email', { type: () => String }) email: string,
+    @Args('type', { type: () => VerificationType }) type: VerificationType,
+    @Args('code', { type: () => String }) code: string
+  ): Promise<VerificationEntity> {
+    const user = await this.$user.getUserByEmail(email);
+
+    return this.$verification.validateVerificationCode(user, type, code);
+  }
+
+  @Mutation(() => UserEntity, { name: 'changeUserPassword' })
+  public async changeUserPassword(
+    @Args('email', { type: () => String }) email: string,
+    @Args('newPassword', { type: () => String }) newPassword: string
+  ): Promise<UserEntity> {
+    const user = await this.$user.getUserByEmail(email);
+
+    return this.$user.changeUserPassword(user.id, newPassword);
   }
 
   @UseGuards(GqlAuthGuard)

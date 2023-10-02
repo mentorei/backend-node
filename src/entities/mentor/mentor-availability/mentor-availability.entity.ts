@@ -17,6 +17,9 @@ export class MentorAvailabilityEntity {
   @Field(() => WeekdayType)
   weekday: WeekdayType;
 
+  @Field(() => Boolean)
+  inUse: boolean;
+
   @Field(() => Date)
   createdAt: Date;
 

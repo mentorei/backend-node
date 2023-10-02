@@ -5,7 +5,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { UserInput } from '../../dto/user/user.input';
 import { CreateUserDTO } from 'src/dto/user/create-user.input';
 import { UpdateUserDTO } from 'src/dto/user/update-user.input';
-import { comparePassword, encodePassword } from 'src/utils/bcrypt';
+import { comparePassword, decryptPassword, encodePassword } from 'src/utils/crypt';
 
 @Injectable()
 export class UserService {
@@ -143,5 +143,24 @@ export class UserService {
     const result = await this.$prisma.user.update({ where: { id }, data: { deleted: new Date() } });
 
     return result;
+  }
+
+  public async changeUserPassword(id: string, encryptPassword: string): Promise<User> {
+    const rawPassword = decryptPassword(encryptPassword);
+
+    //VALIDATE PASSWORD
+    const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{6,}/;
+
+    if (!regExp.test(rawPassword)) {
+      throw new Error('A senha está inválida.');
+    }
+
+    const password = await encodePassword(rawPassword);
+
+    // UPDATE USER PASSWORD
+    return this.$prisma.user.update({
+      where: { id },
+      data: { password },
+    });
   }
 }

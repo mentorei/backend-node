@@ -31,7 +31,8 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime?      @updatedAt
   deleted       DateTime?
-  Notification  Notification[] @relation()
+  notification  Notification[] @relation()
+  verification  Verification[] @relation()
 }
 
 model UserAddress {
@@ -109,6 +110,7 @@ model MentorAvailability {
   openingTime String
   closingTime String
   weekday     WeekdayType
+  inUse       Boolean      @default(false)
   mentorId    String
   mentor      Mentor       @relation(fields: [mentorId], references: [id])
   createdAt   DateTime     @default(now())
@@ -160,6 +162,18 @@ model Notification {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime?        @updatedAt
   deleted     DateTime?
+}
+
+model Verification {
+  id        String           @id @default(uuid())
+  isValid   Boolean          @default(true)
+  type      VerificationType
+  code      String
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  createdAt DateTime         @default(now())
+  updatedAt DateTime?        @updatedAt
+  deleted   DateTime?
 }
 
 enum GenderType {
@@ -223,4 +237,9 @@ enum NotificationType {
 enum SkillType {
   HARDSKILL
   SOFTSKILL
+}
+
+enum VerificationType {
+  PASSWORD_RESET
+  EMAIL_VERIFY
 }

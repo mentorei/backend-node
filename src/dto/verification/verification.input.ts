@@ -1,24 +1,21 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
-import { NotificationType, Prisma } from '@prisma/client';
+import { Prisma, VerificationType } from '@prisma/client';
 
 import { UserEntity } from 'src/entities/user/user.entity';
 
 @InputType()
-export class NotificationInput implements Prisma.NotificationUncheckedCreateInput {
+export class VerificationInput implements Prisma.VerificationUncheckedCreateInput {
   @Field(() => ID)
   id: string;
 
   @Field(() => Boolean)
-  read: boolean;
+  isValid: boolean;
 
-  @Field(() => NotificationType)
-  type: NotificationType;
-
-  @Field(() => String)
-  title: string;
+  @Field(() => VerificationType)
+  type: VerificationType;
 
   @Field(() => String)
-  description: string;
+  code: string;
 
   @Field(() => Date)
   createdAt: Date;

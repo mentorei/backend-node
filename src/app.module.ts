@@ -8,6 +8,7 @@ import {
   PrismaClient,
   NotificationType,
   ConnectionStatusType,
+  VerificationType,
 } from '@prisma/client';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
@@ -23,6 +24,7 @@ import { AuthService } from './services/auth/auth.service';
 import { SortingOrderEnum } from './enums/sorting-order.enum';
 import { UserResolver } from './resolvers/user/user.resolver';
 import { SkillService } from './services/skill/skill.service';
+import { EmailService } from './services/email/email.service';
 import { IsCPFValidator } from './validators/is-cpf.validator';
 import { MentorService } from './services/mentor/mentor.service';
 import { SkillResolver } from './resolvers/skill/skill.resolver';
@@ -36,6 +38,7 @@ import { UniqueUserCPFValidator } from './validators/unique-cpf.validator';
 import { ConnectionService } from './services/connection/connection.service';
 import { UniqueUserEmailValidator } from './validators/unique-email.validator';
 import { ConnectionResolver } from './resolvers/connection/connection.resolver';
+import { VerificationService } from './services/verification/verification.service';
 import { NotificationService } from './services/notification/notification.service';
 import { MentorEvaluationService } from './services/mentor/mentor-evaluation.service';
 import { NotificationResolver } from './resolvers/notification/notification.resolver';
@@ -57,6 +60,7 @@ const RESOLVERS = [
 const SERVICES = [
   AuthService,
   UserService,
+  EmailService,
   SkillService,
   MentorService,
   MenteeService,
@@ -64,6 +68,7 @@ const SERVICES = [
   ConnectionService,
   UserAddressService,
   UserCompanyService,
+  VerificationService,
   NotificationService,
   MentorEvaluationService,
   MentorAvailabilityService,
@@ -141,6 +146,11 @@ export class AppModule {
     registerEnumType(SkillType, {
       name: 'SkillType',
       description: 'To differentiate skills between soft and hard.',
+    });
+
+    registerEnumType(VerificationType, {
+      name: 'VerificationType',
+      description: 'Types of checks existing in the app.',
     });
   }
 }

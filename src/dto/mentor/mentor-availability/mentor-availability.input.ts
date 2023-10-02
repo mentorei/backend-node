@@ -17,6 +17,9 @@ export class MentorAvailabilityInput implements Prisma.MentorAvailabilityUncheck
   @Field(() => WeekdayType)
   weekday: WeekdayType;
 
+  @Field(() => Boolean)
+  inUse: boolean;
+
   @Field(() => Date)
   createdAt: Date;
 

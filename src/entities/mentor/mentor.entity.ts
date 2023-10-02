@@ -39,7 +39,7 @@ export class MentorEntity {
   deleted?: Date;
 
   @Field(() => Int, { nullable: true })
-  totalAvaliations?: number;
+  totalEvaluations?: number;
 
   @Field(() => Float, { nullable: true })
   averageRating?: number | string;

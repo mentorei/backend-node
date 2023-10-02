@@ -1,23 +1,21 @@
-import { NotificationType } from '@prisma/client';
+import { VerificationType } from '@prisma/client';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+
 import { UserEntity } from '../user/user.entity';
 
 @ObjectType()
-export class NotificationEntity {
+export class VerificationEntity {
   @Field(() => ID)
   id: string;
 
   @Field(() => Boolean)
-  read: boolean;
+  isValid: boolean;
 
-  @Field(() => NotificationType)
-  type: NotificationType;
-
-  @Field(() => String)
-  title: string;
+  @Field(() => VerificationType)
+  type: VerificationType;
 
   @Field(() => String)
-  description: string;
+  code: string;
 
   @Field(() => Date)
   createdAt: Date;

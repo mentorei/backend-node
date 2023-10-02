@@ -5,7 +5,8 @@ import { FilterMentorInput } from 'src/dto/mentor/filter-mentor.input';
 import { MentorInput } from 'src/dto/mentor/mentor.input';
 import { PaginationInput } from 'src/dto/user/pagination.input';
 import { UpsertMentorInput } from 'src/dto/mentor/upsert-mentor.input';
-import { calculateTotalAvaliationsAndRating } from 'src/utils/utils';
+import { calculateTotalEvaluationsAndRating } from 'src/utils/utils';
+import { MentorEntity } from 'src/entities/mentor/mentor.entity';
 
 @Injectable()
 export class MentorService {
@@ -49,11 +50,11 @@ export class MentorService {
 
     const mentorsWithRatings = await Promise.all(
       mentors.map(async (mentor) => {
-        const { totalAvaliations, averageRating } = calculateTotalAvaliationsAndRating(mentor.evaluations || []);
+        const { totalEvaluations, averageRating } = calculateTotalEvaluationsAndRating(mentor.evaluations || []);
 
         return {
           ...mentor,
-          totalAvaliations,
+          totalEvaluations,
           averageRating,
         };
       })
@@ -62,7 +63,7 @@ export class MentorService {
     return mentorsWithRatings;
   }
 
-  public async getMentorById(id: string): Promise<Mentor> {
+  public async getMentorById(id: string): Promise<MentorEntity> {
     const mentor = await this.$prisma.mentor.findUnique({
       where: { id, deleted: null },
       include: {
@@ -83,11 +84,21 @@ export class MentorService {
       throw new Error('Não foi possível encontrar este mentor.');
     }
 
-    return mentor;
+    const { totalEvaluations, averageRating } = calculateTotalEvaluationsAndRating(mentor.evaluations || []);
+
+    return {
+      ...mentor,
+      totalEvaluations,
+      averageRating,
+    };
   }
 
   public async updateMentor(mentor: MentorInput): Promise<Mentor> {
-    this.getMentorById(mentor.id);
+    const existingMentor = await this.$prisma.mentor.findUnique({ where: { id: mentor.id, deleted: null } });
+
+    if (!existingMentor) {
+      throw new Error('Perfil de mentor não encontrado.');
+    }
 
     return this.$prisma.mentor.update({
       where: { id: mentor.id },
@@ -126,9 +137,7 @@ export class MentorService {
       throw new Error('Perfil de mentor não encontrado.');
     }
 
-    const result = await this.$prisma.mentor.update({ where: { id }, data: { deleted: new Date() } });
-
-    return result;
+    return this.$prisma.mentor.update({ where: { id }, data: { deleted: new Date() } });
   }
 
   private getWhereInputs(filters: FilterMentorInput): Prisma.MentorWhereInput {

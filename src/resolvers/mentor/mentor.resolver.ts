@@ -23,7 +23,7 @@ export class MentorResolver {
 
   @UseGuards(GqlAuthGuard)
   @Query(() => MentorEntity, { name: 'getMentorById' })
-  public getMentorById(@Args('id', { type: () => String }) id: string): Promise<Mentor> {
+  public getMentorById(@Args('id', { type: () => String }) id: string): Promise<MentorEntity> {
     return this.$mentor.getMentorById(id);
   }
 
